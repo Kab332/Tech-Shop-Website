@@ -1,0 +1,24 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#logo {
+    font-size: 30;
+    padding-right: 4rem;
+}
+
+#searchBar {
+    width: 50%;
+    margin-right: 0.5rem;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
