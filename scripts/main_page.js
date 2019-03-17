@@ -2,6 +2,7 @@ $(document).ready(function() {
     var searchBar = $("#searchBar");
     var table = $("<table>");
     table.addClass("table");
+    $("#content").append(table);
 
     // rawXML variable from xml_parsing_from_jquery.js of website examples (Ajax)
     var rawXML = '\
@@ -14,9 +15,12 @@ $(document).ready(function() {
 </inventory>';
 
     $("#searchButton").click(function () {
-        search("laptop");
-        $("#content").empty();
-        $("#content").append(table);
+        var values = $("#searchBar").val().split(" ");
+
+        $(table).empty();
+        for (var i = 0; i < values.length; i++) {
+            search(values[i]);
+        }
     });
 
     function search (word) {
