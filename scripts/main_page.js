@@ -20,6 +20,7 @@ $(document).ready(function() {
         $(table).empty();
         for (var i = 0; i < values.length; i++) {
             search(values[i]);
+            removeDuplicates();
         }
     });
 
@@ -64,6 +65,27 @@ $(document).ready(function() {
                 table.append(text);
             })
         }
+    }
+
+    // Temporary solution to duplicates
+    function removeDuplicates() {
+        // Making a dictionary that will keep track of values that have been seen 
+        var existingValues = {};
+        // Iterating through all the rows of a table
+        $("table tr").each(function () {
+            // Getting the text from current row
+            var text = $(this).text();
+            // If the current row has already been seen
+            if(existingValues[text]) {
+                // Remove the row
+                $(this).remove();
+            } 
+            // If it has not been seen
+            else {
+                // Add it to the dictionary with a value of true
+                existingValues[text] = true;
+            }
+        });
     }
 });
 
