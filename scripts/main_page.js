@@ -32,8 +32,9 @@ $(document).ready(function() {
     </inventory>';
     
         var xmlDoc = $.parseXML(rawXML);
-        
+
         if ($(xmlDoc).find(word).children().length > 0) {
+            console.log(word);
             getChildrenResults($(xmlDoc).find(word).children());
         } else {
             var element = {};
@@ -56,8 +57,8 @@ $(document).ready(function() {
             });
 
             for (var name in element) {
-                $("#content").append("<h3>" + name + "</h3>");
                 var table = $("<table>");
+                table.append("<tr><th><h3>" + name + "</h3></th></tr>")
                 table.addClass("table");
                 table.append(element[name]);
                 $("#content").append(table);    
@@ -89,9 +90,9 @@ $(document).ready(function() {
                 }
             })
             for (var element in elements) {
-                $("#content").append("<h3>" + element + "</h3>");
                 var table = $("<table>");
                 table.addClass("table");
+                table.append("<tr><th><h3>" + element + "</h3></th></tr>")
                 table.append(elements[element]);
                 $("#content").append(table);    
             }
