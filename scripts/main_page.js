@@ -1,23 +1,10 @@
 $(document).ready(function() {
     var searchBar = $("#searchBar");
-    var table = $("<table>");
-    table.addClass("table");
-    $("#content").append(table);
-
-    // rawXML variable from xml_parsing_from_jquery.js of website examples (Ajax)
-    var rawXML = '\
-<inventory>\
-   <computers>\
-      <laptop price="499.99" cpu="i5-3570" />\
-      <laptop price="549.99" cpu="i5-3570" />\
-      <laptop price="999.99" cpu="i7-2600" />\
-   </computers>\
-</inventory>';
 
     $("#searchButton").click(function () {
         var values = $("#searchBar").val().split(" ");
 
-        $(table).empty();
+        $("#content").empty();
         for (var i = 0; i < values.length; i++) {
             search(values[i]);
             removeDuplicates();
@@ -25,13 +12,23 @@ $(document).ready(function() {
     });
 
     function search (word) {
+        // rawXML variable from xml_parsing_from_jquery.js of website examples (Ajax)
         var rawXML = '\
     <inventory>\
        <computers>\
           <laptop price="499.99" cpu="i5-3570" />\
           <laptop price="549.99" cpu="i5-3570" />\
           <laptop price="999.99" cpu="i7-2600" />\
+          <desktop price="999.99" cpu="i3-2600" gpu="gtx 1080" />\
+          <desktop price="799.99" cpu="i3-3600" gpu="gtx 1070" />\
+          <desktop price="699.99" cpu="i3-4600" gpu="gtx 1060" />\
        </computers>\
+       <components>\
+          <speakers price="40.00" colour="blue" />\
+          <speakers price="60.00" colour="red" />\
+          <mouse price="20.00" colour="white" brand="logitech" />\
+          <mouse price="25.00" colour="black" brand="microsoft" />\
+       </components>\
     </inventory>';
     
         var xmlDoc = $.parseXML(rawXML);
@@ -39,31 +36,65 @@ $(document).ready(function() {
         if ($(xmlDoc).find(word).children().length > 0) {
             getChildrenResults($(xmlDoc).find(word).children());
         } else {
+            var element = {};
+
             $(xmlDoc).find(word).each(function() {
-                var text = "<tr>"
-                $.each(this.attributes, function(i, attribute) {
-                    text += "<td>" + attribute.value + "</td>";
+                var header = "<tr>";
+                var text = "<tr>";
+                $.each(this.attributes, function(i, a) {
+                    header += "<th>" + a.name + "</th>";
+                    text += "<td>" + a.value + "</td>";
                 });
                 text += "</tr>";
-                table.append(text);
+                header += "</tr>";
+
+                if (element[this.localName] == undefined) {
+                    element[this.localName] = header + text;
+                } else {
+                    element[this.localName] += text;
+                }
             });
+
+            for (var name in element) {
+                $("#content").append("<h3>" + name + "</h3>");
+                var table = $("<table>");
+                table.addClass("table");
+                table.append(element[name]);
+                $("#content").append(table);    
+            }
+
         }
     }
     
     function getChildrenResults (collection) {
         if ($(collection).children().length > 0) {
-            $(collection).children().each(function() {
-                getChildrenResults(this);
-            });
+            getChildrenResults($(collection).children());
         } else {
+            var elements = {};
+        
             $(collection).each(function() {
-                var text = "<tr>"
+                var header = "<tr>";
+                var text = "<tr>";
                 $.each(this.attributes, function(i, a) {
+                    header += "<th>" + a.name + "</th>";
                     text += "<td>" + a.value + "</td>";
                 });
                 text += "</tr>";
-                table.append(text);
+                header += "</tr>";
+
+                if (elements[this.localName] == undefined) {
+                    elements[this.localName] = header + text;
+                } else {
+                    elements[this.localName] += text;
+                }
             })
+            for (var element in elements) {
+                $("#content").append("<h3>" + element + "</h3>");
+                var table = $("<table>");
+                table.addClass("table");
+                table.append(elements[element]);
+                $("#content").append(table);    
+            }
         }
     }
 
