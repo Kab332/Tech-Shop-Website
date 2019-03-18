@@ -1,0 +1,46 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#logo {
+  font-size: 30;
+  padding-right: 4rem;
+}
+
+#searchBar {
+  width: 50%;
+  margin-right: 0.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.login {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.form-group a {
+  display: inline;
+  margin: 10px;
+}
+
+.signup {
+  margin: 10px;
+  padding: 10px;
+  /* border: 10px solid black; */
+}
+
+/* .form-group {
+    text-align: center;
+} */
