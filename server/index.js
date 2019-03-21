@@ -25,14 +25,28 @@ app.use(session({
     secret: 'apollo slackware prepositional expectations'
 }));
 
-
+//calls landing page
 app.get('/', function (req, resp) {
-    if (req.session.username) {
-        resp.send('Permission granted!');
-    } else {
-        resp.send('Unauthorized access!')
-    }
+    username = req.session.username;
+    resp.render('index', {
+        title: 'Index',
+        description: 'This is the main page',
+        username: username
+    });
+    // if (req.session.username) {
+    //     resp.send('Permission granted!');
+    // } else {
+    //     resp.send('Unauthorized access!')
+    // }
 });
+
+app.get('/about', function (req, resp) {
+    resp.render('about', {
+        title: 'About'
+    });
+});
+
+//called after the form is submited
 app.get('/processLogin', function (req, resp) {
     // console.log(req.body);
     console.log('/processLogin (GET): username ' + req.query.username);
