@@ -1,15 +1,21 @@
 var express = require('express');
+var app = express();
+
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var uuid = require('uuid/v1');
-var app = express();
 
 //middleware
 app.use(express.static('public'));
-
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+
+//configure the template engine
+app.set('views', __dirname + '/views');
+app.set('view engine', 'pug');
+
+//configure sessions
 app.use(session({
     genid: function (request) {
         return uuid();
