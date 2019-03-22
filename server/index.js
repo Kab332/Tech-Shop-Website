@@ -53,7 +53,7 @@ function userExists(toFind) {
 // database schemas
 var Schema = mongoose.Schema;
 var userSchema = new Schema({
-    username: {
+    uname: {
         type: String,
         unique: true,
         index: true
@@ -64,6 +64,24 @@ var userSchema = new Schema({
     collection: 'users'
 });
 var User = mongoose.model('user', userSchema);
+
+var Schema = mongoose.Schema;
+var itemSchema = new Schema({
+    itemId: {
+        type: String,
+        unique: true,
+        index: true
+    },
+    name: String,
+    quantity: Number,
+    date: {
+        type: Date,
+        default: Date.now
+    }
+}, {
+    collection: 'items'
+});
+var Item = mongoose.model('item', itemSchema);
 
 
 //calls landing page
@@ -80,6 +98,40 @@ app.get('/', function (req, resp) {
     //     resp.send('Unauthorized access!')
     // }
 });
+
+function reloadItemList(request, response, responseMessage) {
+    Item.find().then(function (results) {
+        response.render('items', {
+            title: 'items List',
+            items: results,
+            responseMessage: responseMessage
+        });
+    }).catch(function (error) {
+        console.log(error);
+    });
+}
+
+app.get('/items', function (request, response) {
+    reloadItemList(request, response, '');
+});
+
+app.post('/addItem', function (req, resp) {
+    var newItem = new Item({
+        name: req.body.name,
+        quantity: req.body.quantity
+    });
+    newItem.save(function (error) {
+        if (error) {
+            // insert failed
+            console.log('error while adding item:', error);
+            reloadItemList(req, resp, 'Unable to add item');
+        } else {
+            // insert successful
+            reloadItemList(req, resp, 'Item added');
+        }
+    });
+});
+
 
 app.get('/about', function (req, resp) {
     resp.render('about', {
@@ -102,10 +154,20 @@ app.get('/processLogin', function (req, resp) {
 app.post('/processLogin', function (req, resp) {
     console.log('/processLogin (POST): username: ' + req.body.username);
     if (req.body.username === 'admin' && req.body.password === 'admin') {
-        req.session.username = req.body.username;
-        resp.send('Thanks for login in!');
+        var username = req.body.username;
+        req.session.username = username;
+
+        resp.render('index', {
+            username: username,
+            title: 'hello'
+        });
+        console.log(username);
     } else {
-        resp.send('Unknown user detected');
+        // login failed
+        resp.render('login', {
+            title: 'Login Page',
+            errorMessage: 'Login Incorrect.  Please try again.'
+        });
     }
 });
 
@@ -120,20 +182,31 @@ app.post('/processRegistration', function (request, response) {
     var password = request.body.pwd;
 
 
-
     if (userExists(username)) {
-        response.render('index', function (err, html) {
-            console.log('user exists');
-            console.log(usernames);
+        response.render('register', {
+            title: 'Register',
+            errorMessage: 'Username in use'
         });
     } else {
         usernames.push(username);
+        var u = new User({
+            uame: username,
+            hashedPassword: password
+        });
+        u.save(function (error) {
+            if (error) {
+                // insert failed
+                console.log('error while adding student:', error);
+                reloadStudentList(request, response, 'Unable to add student');
+            } else {
+                // insert successful
+                request.session.username = username;
 
-        request.session.username = username;
-
-        response.render('registerConfirm', {
-            username: username,
-            title: 'Welcome aboard!'
+                response.render('registerConfirm', {
+                    username: username,
+                    title: 'Welcome aboard!'
+                });
+            }
         });
 
         console.log('username: ' + username);
