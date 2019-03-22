@@ -1,0 +1,29 @@
+extends layout
+block content
+   h1= title
+
+   div(class='errorMessage')= errorMessage
+
+   form#login.needs-validation(method='post', action='/processLogin', novalidate='')
+    .col-md-4.offset-md-4
+      .box
+        .loginBox
+          .form-group
+            label(for='uName') LOGO
+            input#userName.form-control(type='userName', name='username', placeholder='Username or Email', required='')
+            .valid-feedback
+              | Looks good!
+            .invalid-feedback
+              | Please enter your user name or email.
+          .form-group
+            input#passWord.form-control(type='password', name='password', placeholder='Password', autocomplete='new-password', required='')
+            .valid-feedback
+              | Looks good!
+            .invalid-feedback
+              | Please enter your password.
+          button.btn.btn-primary(type='submit') Submit
+          hr
+          .form-group
+            h7
+              | Dont have an account? 
+              a(href='/register') Sign up

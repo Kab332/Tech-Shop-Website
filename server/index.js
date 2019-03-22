@@ -4,12 +4,27 @@ var app = express();
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var uuid = require('uuid/v1');
+var mongoose = require('mongoose');
+
+//database config
+mongoose.Promise = global.Promise
+mongoose.connect('mongodb://localhost/users', {
+    useNewUrlParser: true
+}, function (error) {
+    if (error) {
+        return console.error('Unable to connect:', error);
+    }
+});
+mongoose.set('useCreateIndex', true);
 
 //middleware
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/'));
+app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
+
 
 //configure the template engine
 app.set('views', __dirname + '/views');
@@ -24,6 +39,32 @@ app.use(session({
     saveUninitialized: false,
     secret: 'apollo slackware prepositional expectations'
 }));
+
+var usernames = [];
+//utility function
+function userExists(toFind) {
+    for (i = 0; i < usernames.length; i++) {
+        if (usernames[i] === toFind) {
+            return true;
+        }
+    }
+    return false;
+}
+// database schemas
+var Schema = mongoose.Schema;
+var userSchema = new Schema({
+    username: {
+        type: String,
+        unique: true,
+        index: true
+    },
+    email: String,
+    hashedPassword: String
+}, {
+    collection: 'users'
+});
+var User = mongoose.model('user', userSchema);
+
 
 //calls landing page
 app.get('/', function (req, resp) {
@@ -46,6 +87,11 @@ app.get('/about', function (req, resp) {
     });
 });
 
+app.get('/login', function (request, response) {
+    response.render('login', {
+        title: 'Login'
+    });
+});
 //called after the form is submited
 app.get('/processLogin', function (req, resp) {
     // console.log(req.body);
@@ -62,6 +108,40 @@ app.post('/processLogin', function (req, resp) {
         resp.send('Unknown user detected');
     }
 });
+
+app.get('/register', function (request, response) {
+    response.render('register', {
+        title: 'Register'
+    });
+});
+
+app.post('/processRegistration', function (request, response) {
+    var username = request.body.username;
+    var password = request.body.pwd;
+
+
+
+    if (userExists(username)) {
+        response.render('index', function (err, html) {
+            console.log('user exists');
+            console.log(usernames);
+        });
+    } else {
+        usernames.push(username);
+
+        request.session.username = username;
+
+        response.render('registerConfirm', {
+            username: username,
+            title: 'Welcome aboard!'
+        });
+
+        console.log('username: ' + username);
+        console.log('password: ' + password);
+    }
+});
+
+
 
 app.get('/dummymessage', function (req, resp) {
     resp.send('Hello from Node.js and Express');

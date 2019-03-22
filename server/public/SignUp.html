@@ -19,14 +19,15 @@
     <div class="signup">
         <!-- form example off Bootstap website -->
         <!-- link https://getbootstrap.com/docs/4.3/components/forms/ -->
-        <form id="signUpForm" class="needs-validation" novalidate>
+        <!-- method="POST" action="/processRegistration" -->
+        <form id="signUpForm" method="POST" action="/processRegistration" class="needs-validation" novalidate>
             <div class="form-row">
                 <h4>LOGO</h4>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputEmail">Email</label>
-                    <input type="email" class="form-control" id="inputEmail" placeholder="Email" required />
+                    <input type="email" class="form-control" id="inputEmail" placeholder="Email" />
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -36,7 +37,8 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputUserName">User Name</label>
-                    <input type="text" class="form-control" id="inputUserName" placeholder="User Name" required />
+                    <input type="text" name="username" class="form-control" id="inputUserName" placeholder="User Name"
+                        required />
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -46,8 +48,8 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputPassword4">Password</label>
-                    <input type="password" class="form-control" id="inputPassword" placeholder="Password" autocomplete="new-password"
-                        required />
+                    <input type="password" name="pwd" class="form-control" id="inputPassword" placeholder="Password"
+                        autocomplete="new-password" required />
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -63,7 +65,7 @@
             </div>
             <div class="form-group">
                 <label for="inputAddress">Address</label>
-                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" required />
+                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" />
                 <div class="valid-feedback">
                     Looks good!
                 </div>
@@ -78,7 +80,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputCity">City</label>
-                    <input type="text" class="form-control" id="inputCity" required />
+                    <input type="text" class="form-control" id="inputCity" />
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -97,12 +99,12 @@
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputZip">Zip</label>
-                    <input type="text" class="form-control" id="inputZip" required />
+                    <input type="text" class="form-control" id="inputZip" />
                 </div>
             </div>
             <div class="form-group">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="gridCheck" required />
+                    <input class="form-check-input" type="checkbox" id="gridCheck" />
                     <label class="form-check-label" for="gridCheck">
                         Check me out
                     </label>
@@ -116,23 +118,12 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <a href="UserLogin.html">Already have an acount?</a>
+                    <a href="login.html">Already have an acount?</a>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Sign in</button>
         </form>
     </div>
-    <script>
-        // Focus = Changes the background color of input to yellow
-        function focusFunction() {
-            document.getElementById("inputPassword2").style.background = "yellow";
-        }
-
-        // No focus = Changes the background color of input to red
-        function isMatch() {
-            document.getElementById("inputPassword2").style.background = "red";
-        }
-    </script>
 </body>
 
 </html>
