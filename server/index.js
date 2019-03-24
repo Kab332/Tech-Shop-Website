@@ -41,15 +41,8 @@ app.use(session({
 }));
 
 var usernames = [];
-//utility function
-function userExists(toFind) {
-    for (i = 0; i < usernames.length; i++) {
-        if (usernames[i] === toFind) {
-            return true;
-        }
-    }
-    return false;
-}
+var items = [];
+
 // database schemas
 var Schema = mongoose.Schema;
 var userSchema = new Schema({
@@ -67,11 +60,11 @@ var User = mongoose.model('user', userSchema);
 
 var Schema = mongoose.Schema;
 var itemSchema = new Schema({
-    itemId: {
-        type: String,
-        unique: true,
-        index: true
-    },
+    // itemId: {
+    //     type: String,
+    //     unique: true,
+    //     index: true
+    // },
     name: String,
     quantity: Number,
     date: {
@@ -83,6 +76,30 @@ var itemSchema = new Schema({
 });
 var Item = mongoose.model('item', itemSchema);
 
+//utility function
+function userExists(toFind) {
+    for (i = 0; i < usernames.length; i++) {
+        if (usernames[i] === toFind) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function itemExists(toFind) {
+    console.log(Item.find({
+        name: toFind
+    }, function (err, result) {
+        console.log('function called');
+        if (err) throw err;
+
+        // console.log(JSON.stringify(result));
+        items = JSON.stringify(result);
+        console.log(items);
+        return true;
+    }));
+    return items;
+}
 
 //calls landing page
 app.get('/', function (req, resp) {
@@ -115,11 +132,24 @@ app.get('/items', function (request, response) {
     reloadItemList(request, response, '');
 });
 
+app.get('/addItem', function (req, resp) {
+    reloadItemList(req, resp, '');
+});
+
 app.post('/addItem', function (req, resp) {
+    var iName = req.body.name;
+    var iQuantity = req.body.quantity;
+
+    //checks if an item with that name already exists
+
+    resp.send(itemExists(iName));
+    //Creates new item
     var newItem = new Item({
-        name: req.body.name,
-        quantity: req.body.quantity
+        name: iName,
+        quantity: iQuantity
     });
+
+    //saves new item into database
     newItem.save(function (error) {
         if (error) {
             // insert failed
