@@ -4,14 +4,30 @@ $(document).ready(function() {
     $("#searchButton").click(function () {
         var values = $("#searchBar").val().split(" ");
 
+        var rawJSON = '{\
+            "Countries": {\
+                "Canada": [\
+                    {"Province":"Ontario", "City":"Toronto"},\
+                    {"Province":"Ontario", "City":"Oshawa"},\
+                    {"Province":"Quebec", "City":"Montreal"}\
+                ],\
+                "USA": [\
+                    {"State":"New York", "City":"New York"},\
+                    {"State":"Massachusetts", "City":"Boston"}\
+                ]}\
+            }';
+
+        var parsedJSON = JSON.parse(rawJSON);
+
         $("#content").empty();
+        // searchJSON(parsedJSON);
         for (var i = 0; i < values.length; i++) {
-            search(values[i]);
+            searchXML(values[i]);
             removeDuplicates();
         }
     });
 
-    function search (word) {
+    function searchXML (word) {
         // rawXML variable from xml_parsing_from_jquery.js of website examples (Ajax)
         var rawXML = '\
     <inventory>\
@@ -30,7 +46,7 @@ $(document).ready(function() {
           <mouse price="25.00" colour="black" brand="microsoft" />\
        </components>\
     </inventory>';
-    
+
         var xmlDoc = $.parseXML(rawXML);
 
         if ($(xmlDoc).find(word).children().length > 0) {
@@ -118,6 +134,18 @@ $(document).ready(function() {
                 existingValues[text] = true;
             }
         });
+    }
+
+    function searchJSON(data) {
+        var results = [];
+        for (var child in data) {
+            if(typeof data[child] == 'object') {
+                searchJSON(data[child]);  
+            } else {
+                console.log(child + ' - ' + data[child]);
+            }
+        }
+        console.log('\n')
     }
 });
 
