@@ -69,12 +69,11 @@ var User = mongoose.model("user", userSchema);
 
 var Schema = mongoose.Schema;
 var itemSchema = new Schema({
-    // itemId: {
-    //     type: String,
-    //     unique: true,
-    //     index: true
-    // },
-    name: String,
+    name: {
+        type: String,
+        unique: true,
+        index: true
+    },
     quantity: Number,
     date: {
         type: Date,
@@ -83,17 +82,8 @@ var itemSchema = new Schema({
 }, {
     collection: "items"
 });
-var Item = mongoose.model("item", itemSchema);
 
-//utility function
-function userExists(toFind) {
-    for (i = 0; i < usernames.length; i++) {
-        if (usernames[i] === toFind) {
-            return true;
-        }
-    }
-    return false;
-}
+var Item = mongoose.model('item', itemSchema);
 
 //calls landing page
 app.get("/", function (req, resp) {
