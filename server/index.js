@@ -132,6 +132,18 @@ app.post('/addItem', function (req, resp) {
     });
 });
 
+app.post('/removeItem', function (req, resp) {
+    name = req.body.name;
+    Item.remove({
+        name: name
+    }, function(error) {
+        if(error) {
+            reloadItemList(req, resp, 'Unable to delete item');
+        } else {
+            reloadItemList(req, resp, 'Item deleted');
+        }
+    });
+});
 
 app.get('/about', function (req, resp) {
     resp.render('about', {

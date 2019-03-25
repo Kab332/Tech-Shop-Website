@@ -14,6 +14,12 @@ block content
             td= item.name
             td= item.quantity
             td= item.date
+            td 
+               form(method="post",
+                  action="/removeItem"
+                  class="form")
+                  input(type="hidden", name="name", value=item.name)
+                  button(class="control row3") Remove
             
    form(method="post",
      action="/addItem"
