@@ -33,6 +33,8 @@ app.use(
 );
 app.use("/jquery", express.static(__dirname + "/node_modules/jquery/dist/"));
 
+app.use(bodyParser.json());
+
 //configure the template engine
 app.set("views", __dirname + "/views");
 app.set("view engine", "pug");
@@ -172,6 +174,37 @@ app.post('/addItem', function (req, resp) {
             reloadItemList(req, resp, 'Item added');
         }
     });
+});
+
+app.post('/updateItems', function (req, resp) {
+    var rows = req.body.rows;
+    var count = 1;
+
+    Item.find({}).then(function(results) {
+        for (var i = 0; i < results.length; i++) {
+            var newData = {
+                name: rows[i].name,
+                quantity: rows[i].quantity,
+                date: rows[i].date
+            };
+    
+            Item.updateOne({
+                    name: results[i].name
+                }, 
+                newData, 
+                function(error, num) {
+                    if (error != null) {
+                        console.log("Update error for row " + count + ": " + error); 
+                        count++;
+                    } else {
+                        console.log("Update successful for row " + count);
+                        count++;
+                    }
+                }
+            );
+        }
+    });
+    resp.json("Done");
 });
 
 app.post('/removeItem', function (req, resp) {
