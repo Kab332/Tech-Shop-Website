@@ -1,0 +1,76 @@
+
+extends layout
+block content
+   h1= title
+   if (responseMessage)
+      div(class="error")= responseMessage
+   p Class list for #{username}:
+
+   ul.nav.nav-tabs
+     li.nav-item
+       a.nav-link.active(href='#') Active
+     li.nav-item
+       a.nav-link(href='#') Link
+     li.nav-item
+       a.nav-link(href='#') Link
+     li.nav-item
+       a.nav-link.disabled(href='#', tabindex='-1', aria-disabled='true') Disabled
+   
+   form(method="post",
+     action="/addItem"
+     class="form")
+     
+      input(type="text",
+         id="name",
+         name="name",
+         placeholder="name",
+         class="control row1" required)
+
+      input(type="text",
+            id="quantity",
+            name="quantity",
+            placeholder="quatity",
+            class="control row2" required)
+            
+      input(type="date",
+         id="date",
+         name="date",
+         placeholder="date",
+         class="control row2")
+      button(class="control row3" name="Add") Add
+      button(class="control row3" name="Update") Update
+
+   table(class="table")
+      tr
+         th Name
+         th Quantity
+         th Date
+         th Remove?
+         th 
+            form(method="post",
+               action="/removeAllItems"
+               class="form")
+               button(class="control row 3") Remove All
+   
+      each item in items
+         tr
+            td= item.name
+            td= item.quantity
+            td= item.date
+            td 
+               form(method="post",
+                  action="/removeItem"
+                  class="form")
+                  input(type="hidden", name="name", value=item.name)
+                  button(class="control row3") Remove
+
+   //- if (username === 'admin')
+         input(type="date",
+               id="date",
+               name="date",
+               placeholder="date",
+               class="control row2")
+
+         button(class="control row3") Add
+      
+      //- if (username === 'admin')
