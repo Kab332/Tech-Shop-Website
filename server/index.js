@@ -101,7 +101,7 @@ app.get('/', function (req, resp) {
 function reloadItemList(request, response, responseMessage) {
     Item.find().then(function (results) {
         response.render('items', {
-            title: 'items List',
+            title: 'Items List',
             items: results,
             responseMessage: responseMessage
         });
@@ -138,9 +138,20 @@ app.post('/removeItem', function (req, resp) {
         name: name
     }, function(error) {
         if(error) {
-            reloadItemList(req, resp, 'Unable to delete item');
+            reloadItemList(req, resp, 'Unable to remove item');
         } else {
-            reloadItemList(req, resp, 'Item deleted');
+            reloadItemList(req, resp, 'Item removed');
+        }
+    });
+});
+
+app.post('/removeAllItems', function (req, resp) {
+    Item.remove({
+    },  function(error) {
+        if(error) {
+            reloadItemList(req, resp, 'Unable to remove all items');
+        } else {
+            reloadItemList(req, resp, 'All items removed.');
         }
     });
 });
