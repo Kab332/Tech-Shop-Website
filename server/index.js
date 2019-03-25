@@ -67,12 +67,11 @@ var User = mongoose.model('user', userSchema);
 
 var Schema = mongoose.Schema;
 var itemSchema = new Schema({
-    itemId: {
+    name: {
         type: String,
         unique: true,
         index: true
     },
-    name: String,
     quantity: Number,
     date: {
         type: Date,
@@ -81,8 +80,8 @@ var itemSchema = new Schema({
 }, {
     collection: 'items'
 });
-var Item = mongoose.model('item', itemSchema);
 
+var Item = mongoose.model('item', itemSchema);
 
 //calls landing page
 app.get('/', function (req, resp) {
@@ -112,13 +111,14 @@ function reloadItemList(request, response, responseMessage) {
 }
 
 app.get('/items', function (request, response) {
-    reloadItemList(request, response, '');
+    reloadItemList(request, response, '');   
 });
 
 app.post('/addItem', function (req, resp) {
     var newItem = new Item({
         name: req.body.name,
-        quantity: req.body.quantity
+        quantity: req.body.quantity,
+        date: req.body.date
     });
     newItem.save(function (error) {
         if (error) {
