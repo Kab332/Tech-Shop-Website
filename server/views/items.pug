@@ -19,6 +19,7 @@ block content
                name="quantity",
                placeholder="quatity",
                class="control row2" required)
+               
 
      input(type="date",
          id="date",
@@ -29,10 +30,16 @@ block content
      button(class="control row3" name="Add") Add
 
    table(class="table")
-      tr
-         th name
-         th Quantity
-         th Date
+         tr
+            th Name
+            th Quantity
+            th Date
+            th Remove?
+            th 
+               form(method="post",
+                  action="/removeAllItems"
+                  class="form")
+                  button(class="control row 3") Remove All
       each item in items
          tr
             td= item.name
