@@ -113,51 +113,67 @@ app.get("/items", function (request, response) {
     reloadItemList(request, response, "");
 });
 
-app.get("/addItem", function (req, resp) {
-    reloadItemList(req, resp, "");
-});
+// app.post("/addItem", function (req, resp) {
+//     console.log(JSON.stringify(req.body));
+//     // resp.send(req);
 
-app.post("/addItem", function (req, resp) {
-    console.log(JSON.stringify(req.body));
-    // resp.send(req);
-    name = req.body.name;
-    quantity = req.body.quantity;
-    date = req.body.quantity;
+//     //itemDate
+//     var newItem = new Item({
+//         name: req.body.name,
+//         quantity: req.body.quantity,
+//         date: req.body.date
+//     });
 
-    //itemDate
-    itemData = {
-        name: name,
-        quantity: quantity,
-        date: date
-    }
+//     console.log("reached");
 
-    //checks if an item with that name already exists
-    Item.find({
-        name: name
-    }).then(function (err, items) {
-        if (err) return console.log(err);
-        //name exists
-        if (items.length != 0) {
-            reloadItemList(req, resp, 'Item with that name already exist');
-        }
-        //name doesnt exist 
-        else {
-            // //saves new item into database
-            var newItem = new Item(itemData);
-            newItem.save(function (error) {
-                if (error) {
-                    // insert failed
-                    console.log('error while adding item:', error);
-                    reloadItemList(req, resp, 'Unable to add item');
-                } else {
-                    // insert successful
-                    reloadItemList(req, resp, 'Item added');
-                }
-            });
+//     //checks if an item with that name already exists
+//     Item.find({
+//         name: req.body.name
+//     }).then(function (err, items) {
+//         if (err) return console.log(err);
+//         //name exists
+//         if (items.length != 0) {
+//             console.log("Item exists");
+//             reloadItemList(req, resp, 'Item with that name already exist');
+//         }
+//         //name doesnt exist 
+//         else {
+//             console.log("Item does not exist");
+//             // //saves new item into database
+//             newItem.save(function (error) {
+//                 if (error) {
+//                     // insert failed
+//                     console.log('error while adding item:', error);
+//                     reloadItemList(req, resp, 'Unable to add item');
+//                 } else {
+//                     // insert successful
+//                     reloadItemList(req, resp, 'Item added');
+//                 }
+//             });
+//         }
+//     });
+
+// });
+
+
+app.post('/addItem', function (req, resp) {
+    var newItem = new Item({
+        name: req.body.name,
+        quantity: req.body.quantity,
+        date: req.body.date
+    });
+    newItem.save(function (error) {
+        if (error) {
+            // insert failed
+            console.log('error while adding item:', error);
+            reloadItemList(req, resp, 'Unable to add item');
+        } else {
+            // insert successful
+            reloadItemList(req, resp, 'Item added');
         }
     });
-
 });
+
 app.post('/removeItem', function (req, resp) {
     name = req.body.name;
     Item.remove({
@@ -169,7 +185,19 @@ app.post('/removeItem', function (req, resp) {
             reloadItemList(req, resp, 'Item deleted');
         }
     });
-})
+});
+
+app.post('/removeAllItems', function (req, resp) {
+    console.log('Reached');
+    Item.remove({
+    },  function(error) {
+        if(error) {
+            reloadItemList(req, resp, 'Unable to remove all items');
+        } else {
+            reloadItemList(req, resp, 'All items removed.');
+        }
+    });
+});
 
 app.get("/about", function (req, resp) {
     resp.render("about", {
