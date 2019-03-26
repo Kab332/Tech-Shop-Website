@@ -10,23 +10,23 @@ html
         script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js")
         script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js")
     body
-        ul(class="menu")
-            li
-                a(href="/") Home
-            li
-                a(href="/about") About
-            if (!username || (username === ''))
-                li 
-                    a(href="/login") Login
-            else
+        nav(class="navbar navbar-expand-lg navbar-light bg-light")
+            a(class="navbar-brand" href="/") Newer Egg
+            ul(class="navbar-nav")
+                li(class="nav-item")
+                    a(href="/" class="nav-link") Home
+                li(class="nav-item")
+                    a(href="/about" class="nav-link") About
                 li
-                   a(href="/login") Login
-                li
-                   a(href="/register") Register
-            li
-                a(href="/items") Items
-            if (username === 'admin')
-                li 
-                    a(href="/admin") Admin
+                    a(href="/items" class="nav-link") Items
+                if (username === 'admin')
+                    li(class="nav-item")
+                        a(href="/admin" class="nav-link") Admin
+
+                if (username === undefined)
+                    li(class="nav-item")
+                    a(href="/login" class="nav-link") Login
+                    li(class="nav-item")
+                    a(href="/register" class="nav-link") Register
         block content
 
