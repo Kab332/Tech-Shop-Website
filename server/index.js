@@ -160,22 +160,34 @@ app.get("/items", function (request, response) {
 
 app.post('/search', function (req, resp) {
     username = req.session.username;
-    Item.find({name: {"$regex": req.body.searchValue, "$options": "i"}}).then(function(results) {
-        var text = "";
-        if (results.length == 0) {
-            text = "No items were found.";
-        } else if (results.length > 1) {
-            text = "Multiple items have been found!";
-        } else if (results.length > 0) {
-            text = "An item has been found!";
-        }
-        resp.render("index", {
-            title: "Index",
-            description: text,
-            username: username,
-            tableItems: results
+
+    if (req.body.searchValue == "all") {
+        Item.find({}).then(function(results) {
+            resp.render("index", {
+                title: "Index",
+                description: "Displaying all items.",
+                username: username,
+                tableItems: results
+            });
         });
-    });
+    } else {
+        Item.find({name: {"$regex": req.body.searchValue, "$options": "i"}}).then(function(results) {
+            var text = "";
+            if (results.length == 0) {
+                text = "No items were found.";
+            } else if (results.length > 1) {
+                text = "Multiple items have been found!";
+            } else if (results.length > 0) {
+                text = "An item has been found!";
+            }
+            resp.render("index", {
+                title: "Index",
+                description: text,
+                username: username,
+                tableItems: results
+            });
+        });
+    }
 });
 
 app.post('/addItem', function (req, resp) {
