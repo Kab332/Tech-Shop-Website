@@ -77,10 +77,7 @@ var itemSchema = new Schema({
         index: true
     },
     quantity: Number,
-    date: {
-        type: Date,
-        default: Date.now
-    }
+    date: String
 }, {
     collection: "items"
 });
