@@ -5,6 +5,23 @@ body {
   padding: 0;
 }
 
+
+.icon {
+  width: 1.60rem;
+  height: 1.60rem;
+}
+
+.navbar-brand {
+  padding-top: 0.15rem;
+  padding-bottom: 0.15rem;
+}
+
+
+.nav-item {
+  padding-top: 0.15rem;
+  margin-right: 0.5rem;
+}
+
 #logo {
   font-size: 30;
   padding-right: 4rem;

@@ -1,79 +1,80 @@
 extends layout
 block content
-   h1= title
+  div(class="container-fluid")
+    h1= title
 
-   div(class='errorMessage')= errorMessage
+    div(class='errorMessage')= errorMessage
 
-      
-   .signup
-     form#signUpForm.needs-validation(method='POST', action='/processRegistration', novalidate='')
-      .form-row
-        h4 LOGO
-      .form-row
-        .form-group.col-md-6
-          label(for='inputEmail') Email
-          input#inputEmail.form-control(type='email', placeholder='Email')
+        
+    .signup
+      form#signUpForm.needs-validation(method='POST', action='/processRegistration', novalidate='')
+        .form-row
+          h4 LOGO
+        .form-row
+          .form-group.col-md-6
+            label(for='inputEmail') Email
+            input#inputEmail.form-control(type='email', placeholder='Email')
+            .valid-feedback
+              | Looks good!
+            .invalid-feedback
+              | Please enter an email address.
+          .form-group.col-md-6
+            label(for='inputUserName') User Name
+            input#inputUserName.form-control(type='text', name='username', placeholder='User Name', required='')
+            .valid-feedback
+              | Looks good!
+            .invalid-feedback
+              | Please enter a username.
+          .form-group.col-md-6
+            label(for='inputPassword4') Password
+            input#inputPassword.form-control(type='password', name='pwd', placeholder='Password', autocomplete='new-password', required='')
+            .valid-feedback
+              | Looks good!
+            .invalid-feedback
+              | Please enter a password.
+          .form-group.col-md-6
+            label(for='inputPassword2') Confirm Password
+            input#inputPassword2.form-control(type='password', placeholder='Retype Password', autocomplete='new-password')
+        .form-group
+          label(for='inputAddress') Address
+          input#inputAddress.form-control(type='text', placeholder='1234 Main St')
           .valid-feedback
             | Looks good!
           .invalid-feedback
-            | Please enter an email address.
-        .form-group.col-md-6
-          label(for='inputUserName') User Name
-          input#inputUserName.form-control(type='text', name='username', placeholder='User Name', required='')
-          .valid-feedback
-            | Looks good!
-          .invalid-feedback
-            | Please enter a username.
-        .form-group.col-md-6
-          label(for='inputPassword4') Password
-          input#inputPassword.form-control(type='password', name='pwd', placeholder='Password', autocomplete='new-password', required='')
-          .valid-feedback
-            | Looks good!
-          .invalid-feedback
-            | Please enter a password.
-        .form-group.col-md-6
-          label(for='inputPassword2') Confirm Password
-          input#inputPassword2.form-control(type='password', placeholder='Retype Password', autocomplete='new-password')
-      .form-group
-        label(for='inputAddress') Address
-        input#inputAddress.form-control(type='text', placeholder='1234 Main St')
-        .valid-feedback
-          | Looks good!
-        .invalid-feedback
-          | Please add an address.
-      .form-group
-        label(for='inputAddress2') Address 2
-        input#inputAddress2.form-control(type='text', placeholder='Apartment, studio, or floor')
-      .form-row
-        .form-group.col-md-6
-          label(for='inputCity') City
-          input#inputCity.form-control(type='text')
-          .valid-feedback
-            | Looks good!
-          .invalid-feedback
-            | Please enter the city.
-        // make render list based on the Country selected
-        .form-group.col-md-4
-          label(for='inputState') State
-          select#inputState.form-control
-            option(selected='') Choose...
-            option ...
-        .form-group.col-md-2
-          label(for='inputZip') Zip
-          input#inputZip.form-control(type='text')
-      .form-group
-        .form-check
-          input#gridCheck.form-check-input(type='checkbox')
-          label.form-check-label(for='gridCheck')
-            | Check me out
-          .valid-feedback
-            | Looks good!
-          .invalid-feedback
-            | Please click the check me out box.
-      .form-row
-        .form-group.col-md-4
-          a(href='/login') Already have an acount?
-      button.btn.btn-primary(type='submit') Sign in
+            | Please add an address.
+        .form-group
+          label(for='inputAddress2') Address 2
+          input#inputAddress2.form-control(type='text', placeholder='Apartment, studio, or floor')
+        .form-row
+          .form-group.col-md-6
+            label(for='inputCity') City
+            input#inputCity.form-control(type='text')
+            .valid-feedback
+              | Looks good!
+            .invalid-feedback
+              | Please enter the city.
+          // make render list based on the Country selected
+          .form-group.col-md-4
+            label(for='inputState') State
+            select#inputState.form-control
+              option(selected='') Choose...
+              option ...
+          .form-group.col-md-2
+            label(for='inputZip') Zip
+            input#inputZip.form-control(type='text')
+        .form-group
+          .form-check
+            input#gridCheck.form-check-input(type='checkbox')
+            label.form-check-label(for='gridCheck')
+              | Check me out
+            .valid-feedback
+              | Looks good!
+            .invalid-feedback
+              | Please click the check me out box.
+        .form-row
+          .form-group.col-md-4
+            a(href='/login') Already have an acount?
+        button.btn.btn-primary(type='submit') Sign in
 
-      
-        script(src="js/signup.js")
+        
+          script(src="js/signup.js")

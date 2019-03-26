@@ -1,29 +1,30 @@
 extends layout
 block content
-   h1= title
-   p= description
-   if (!username || (username === ''))
-      p You are not logged in
-   else
-      p You are logged in as #{username}.
+   div(class="container-fluid")
+      h1= title
+      p= description
+      if (!username || (username === ''))
+         p You are not logged in
+      else
+         p You are logged in as #{username}.
 
-   a Some Store   
+      a Some Store   
 
-   form(method="post",
-      action="/search"
-      class="form")
-      input(name="searchValue", type='text', placeholder='Enter Search...')
-      button(class="searchButton", name="Search") Search
+      form(method="post",
+         action="/search"
+         class="form")
+         input(name="searchValue", type='text', placeholder='Enter Search...')
+         button(class="searchButton", name="Search") Search
 
-   table(id="table" class="table")
-      if(tableItems.length > 0)
-         tr
-            th Name
-            th Quantity
-            th Date
+      table(id="table" class="table")
+         if(tableItems.length > 0)
+            tr
+               th Name
+               th Quantity
+               th Date
 
-      each item in tableItems
-         tr
-            td= item.name
-            td= item.quantity
+         each item in tableItems
+            tr
+               td= item.name
+               td= item.quantity
             td= item.date

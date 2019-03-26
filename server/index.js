@@ -99,7 +99,7 @@ function reloadItemList(request, response, responseMessage) {
     Item.find()
         .then(function (results) {
             response.render("items", {
-                title: "items List",
+                title: "Items List",
                 items: results,
                 responseMessage: responseMessage
             });
@@ -299,6 +299,17 @@ app.post("/processLogin", function (req, resp) {
             errorMessage: "Login Incorrect.  Please try again."
         });
     }
+});
+
+// Signout get
+app.get("/signout", function (req, resp) {
+    req.session.username = undefined;
+    resp.render("index", {
+        title: "Index",
+        description: "You have signed out.",
+        username: undefined,
+        tableItems: []
+    });
 });
 
 app.get("/register", function (request, response) {
