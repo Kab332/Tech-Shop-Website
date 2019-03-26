@@ -1,8 +1,14 @@
 html,
 body {
+  background-color: red;
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+#userIcon {
+  width: 5%;
+  height: 5%;
 }
 
 #logo {

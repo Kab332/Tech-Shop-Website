@@ -3,8 +3,8 @@ html
     head
         title=title
         link(rel="stylesheet", href="/bootstrap/css/bootstrap.css")
-        link(rel="stylesheet", href="css/style.css")
         link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
+        link(rel="stylesheet", href="css/style.css")
 
         script(src="https://code.jquery.com/jquery-latest.min.js")
         script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js")
@@ -17,16 +17,20 @@ html
                     a(href="/" class="nav-link") Home
                 li(class="nav-item")
                     a(href="/about" class="nav-link") About
-                li
+                li(class="nav-item")
                     a(href="/items" class="nav-link") Items
                 if (username === 'admin')
                     li(class="nav-item")
-                        a(href="/admin" class="nav-link") Admin
+                        div(class="dropdown")
+                            button(class="btn btn-secondary dropdown-toggle btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                                img(class="icon" src="images/user_icon.png", alt="")
+                            div(class="dropdown-menu" aria-labelledby="dropdownMenuButton")
+                                p(class="dropdown-item") Admin
 
                 if (username === undefined)
                     li(class="nav-item")
-                    a(href="/login" class="nav-link") Login
+                        a(href="/login" class="nav-link") Login
                     li(class="nav-item")
-                    a(href="/register" class="nav-link") Register
+                        a(href="/register" class="nav-link") Register
         block content
 
