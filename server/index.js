@@ -289,8 +289,10 @@ app.post("/processLogin", function (req, resp) {
         req.session.username = username;
 
         resp.render("index", {
+            title: "Hello",
+            description: "",
             username: username,
-            title: "hello"
+            tableItems: []
         });
         console.log(username);
     } else {
