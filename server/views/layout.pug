@@ -5,6 +5,7 @@ html
         link(rel="stylesheet", href="/bootstrap/css/bootstrap.css")
         link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
         link(rel="stylesheet", href="/css/style.css")
+        link(rel="stylesheet", href="https://use.fontawesome.com/releases/v5.8.1/css/all.css", integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf", crossorigin="anonymous")
 
         script(src="https://code.jquery.com/jquery-latest.min.js")
         script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js")
@@ -32,8 +33,13 @@ html
                                 a(href="/signout" class="dropdown-item") Sign out
                 if (username === undefined)
                     li(class="nav-item")
-                        a(href="/login" class="nav-link") Login
+                        a(href="/login" class="nav-link login") Login
                     li(class="nav-item")
-                        a(href="/register" class="nav-link") Register
+                        a(href="/register" class="nav-link register") Register
+                li(class="nav-item")
+                    a(href="#" class="nav-link")
+                        div(class="cart")
+                            i.fas.fa-shopping-cart
+
         block content
 
