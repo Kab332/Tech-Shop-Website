@@ -42,7 +42,7 @@ app.set("view engine", "pug");
 //configure sessions
 app.use(
     session({
-        genid: function (request) {
+        genid: function (req) {
             return uuid();
         },
         resave: false,
@@ -77,7 +77,10 @@ var itemSchema = new Schema({
         index: true
     },
     quantity: Number,
-    date: String
+    date: {
+        type: String,
+        default: Date.now
+    }
 }, {
     collection: "items"
 });
@@ -85,9 +88,10 @@ var itemSchema = new Schema({
 var Item = mongoose.model('item', itemSchema);
 
 //calls landing page
-app.get("/", function (req, resp) {
+app.get("/", function (req, res) {
+    // req.session.username = 'admin';
     username = req.session.username;
-    resp.render("index", {
+    res.render("index", {
         title: "Index",
         description: "This is the main page",
         username: username,
@@ -95,13 +99,13 @@ app.get("/", function (req, resp) {
     })
 });
 
-function reloadItemList(request, response, responseMessage) {
+function reloadItemList(req, res, resMessage) {
     Item.find()
         .then(function (results) {
-            response.render("items", {
+            res.render("items", {
                 title: "Items List",
                 items: results,
-                responseMessage: responseMessage
+                resMessage: resMessage
             });
         })
         .catch(function (error) {
@@ -109,58 +113,90 @@ function reloadItemList(request, response, responseMessage) {
         });
 }
 
-app.get("/items", function (request, response) {
-    reloadItemList(request, response, "");
+app.get("/items", function (req, res) {
+    reloadItemList(req, res, "");
 });
-
-// app.post("/addItem", function (req, resp) {
-//     console.log(JSON.stringify(req.body));
-//     // resp.send(req);
-
-//     //itemDate
-//     var newItem = new Item({
-//         name: req.body.name,
-//         quantity: req.body.quantity,
-//         date: req.body.date
+// app.get('/items/all', function (req, res) {
+//     Item.find({}).then(function (err, item) {
+//         if (err)
+//             res.send(err);
+//         res.json(item);
 //     });
-
-//     console.log("reached");
-
-//     //checks if an item with that name already exists
-//     Item.find({
-//         name: req.body.name
-//     }).then(function (err, items) {
-//         if (err) return console.log(err);
-//         //name exists
-//         if (items.length != 0) {
-//             console.log("Item exists");
-//             reloadItemList(req, resp, 'Item with that name already exist');
-//         }
-//         //name doesnt exist 
-//         else {
-//             console.log("Item does not exist");
-//             // //saves new item into database
-//             newItem.save(function (error) {
-//                 if (error) {
-//                     // insert failed
-//                     console.log('error while adding item:', error);
-//                     reloadItemList(req, resp, 'Unable to add item');
-//                 } else {
-//                     // insert successful
-//                     reloadItemList(req, resp, 'Item added');
-//                 }
-//             });
-//         }
-//     });
-
 // });
 
-app.post('/search', function (req, resp) {
+app.get("/items/:id", function (req, res) {
+    console.log(req.params.id);
+    var id = req.params.id;
+    var query;
+    if (id == 'ALL') {
+        query = Item.find({});
+    } else {
+        query = Item.find({
+            name: req.params.id
+        });
+    }
+    if (query == '' || query == 'undefinded') {
+        console.error('somthing badhappened');
+    } else {
+        query.exec(function (err, item) {
+            if (err)
+                res.send(err);
+            res.json(item);
+        });
+    }
+});
+// app.get("/users/:id", function (req, res) {
+//     User.find({
+//         name: req.params.id
+//     }).then(function (err, item) {
+//         if (err)
+//             res.send(err);
+//         res.json(item);
+//     });
+// });
+
+
+app.get('/users/all', function (req, res) {
+    User.find({}).then(function (err, item) {
+        if (err)
+            res.send(err);
+        res.json(item);
+    });
+});
+
+function queryByName(name) {
+    return Item.find({
+        name: name
+    });
+}
+
+app.get('/admin', function (req, res) {
+    username = req.session.username;
+    if (username === 'admin') {
+        res.render("admin", {
+            title: "admin",
+            description: "Displaying all items.",
+            username: username
+            // tableItems: results
+        });
+    } else {
+        Item.find({}).then(function (results) {
+            res.render("index", {
+                title: "Index",
+                description: "Displaying all items.",
+                username: username,
+                tableItems: results
+            });
+        });
+    }
+});
+
+app.post('/search', function (req, res) {
     username = req.session.username;
 
     if (req.body.searchValue == "all") {
-        Item.find({}).then(function(results) {
-            resp.render("index", {
+        Item.find({}).then(function (results) {
+            res.render("index", {
                 title: "Index",
                 description: "Displaying all items.",
                 username: username,
@@ -168,7 +204,12 @@ app.post('/search', function (req, resp) {
             });
         });
     } else {
-        Item.find({name: {"$regex": req.body.searchValue, "$options": "i"}}).then(function(results) {
+        Item.find({
+            name: {
+                "$regex": req.body.searchValue,
+                "$options": "i"
+            }
+        }).then(function (results) {
             var text = "";
             if (results.length == 0) {
                 text = "No items were found.";
@@ -177,7 +218,7 @@ app.post('/search', function (req, resp) {
             } else if (results.length > 0) {
                 text = "An item has been found!";
             }
-            resp.render("index", {
+            res.render("index", {
                 title: "Index",
                 description: text,
                 username: username,
@@ -187,43 +228,51 @@ app.post('/search', function (req, resp) {
     }
 });
 
-app.post('/addItem', function (req, resp) {
+app.post('/addItem', function (req, res) {
     var newItem = new Item({
         name: req.body.name,
         quantity: req.body.quantity,
         date: req.body.date
     });
-    newItem.save(function (error) {
-        if (error) {
-            // insert failed
-            console.log('error while adding item:', error);
-            reloadItemList(req, resp, 'Unable to add item');
+    queryByName(newItem.name).exec(function (err, result) {
+        if (err)
+            console.error(err);
+        if (result.length == 0) {
+            newItem.save(function (error) {
+                if (error) {
+                    // insert failed
+                    console.log('error while adding item:', error);
+                    reloadItemList(req, res, 'Unable to add item');
+                } else {
+                    // insert successful
+                    reloadItemList(req, res, 'Item added');
+                }
+            });
         } else {
-            // insert successful
-            reloadItemList(req, resp, 'Item added');
+            res.send(req.headers);
         }
     });
 });
 
-app.post('/updateItems', function (req, resp) {
+app.post('/updateItems', function (req, res) {
     var rows = req.body.rows;
     var count = 1;
 
-    Item.find({}).then(function(results) {
+    Item.find({}).then(function (results) {
         for (var i = 0; i < results.length; i++) {
             var newData = {
                 name: rows[i].name,
                 quantity: rows[i].quantity,
                 date: rows[i].date
             };
-    
+
             Item.updateOne({
                     name: results[i].name
-                }, 
-                newData, 
-                function(error, num) {
+                },
+                newData,
+                function (error, num) {
                     if (error != null) {
-                        console.log("Update error for row " + count + ": " + error); 
+                        console.log("Update error for row " + count + ": " + error);
                         count++;
                     } else {
                         console.log("Update successful for row " + count);
@@ -233,59 +282,58 @@ app.post('/updateItems', function (req, resp) {
             );
         }
     });
-    resp.json("Done");
+    res.json("Done");
 });
 
-app.post('/removeItem', function (req, resp) {
+app.post('/removeItem', function (req, res) {
     name = req.body.name;
     Item.remove({
         name: name
     }, function (error) {
         if (error) {
-            reloadItemList(req, resp, 'Unable to delete item');
+            reloadItemList(req, res, 'Unable to delete item');
         } else {
-            reloadItemList(req, resp, 'Item deleted');
+            reloadItemList(req, res, 'Item deleted');
         }
     });
 });
 
-app.post('/removeAllItems', function (req, resp) {
+app.post('/removeAllItems', function (req, res) {
     console.log('Reached');
-    Item.remove({
-    },  function(error) {
-        if(error) {
-            reloadItemList(req, resp, 'Unable to remove all items');
+    Item.remove({}, function (error) {
+        if (error) {
+            reloadItemList(req, res, 'Unable to remove all items');
         } else {
-            reloadItemList(req, resp, 'All items removed.');
+            reloadItemList(req, res, 'All items removed.');
         }
     });
 });
 
-app.get("/about", function (req, resp) {
-    resp.render("about", {
+app.get("/about", function (req, res) {
+    res.render("about", {
         title: "About"
     });
 });
 
-app.get("/login", function (request, response) {
-    response.render("login", {
+app.get("/login", function (req, res) {
+    res.render("login", {
         title: "Login"
     });
 });
 //called after the form is submited
-app.get("/processLogin", function (req, resp) {
+app.get("/processLogin", function (req, res) {
     // console.log(req.body);
     console.log("/processLogin (GET): username " + req.query.username);
 });
 
 //used for form submission
-app.post("/processLogin", function (req, resp) {
+app.post("/processLogin", function (req, res) {
     console.log("/processLogin (POST): username: " + req.body.username);
     if (req.body.username === "admin" && req.body.password === "admin") {
         var username = req.body.username;
         req.session.username = username;
 
-        resp.render("index", {
+        res.render("index", {
             title: "Hello",
             description: "",
             username: username,
@@ -294,7 +342,7 @@ app.post("/processLogin", function (req, resp) {
         console.log(username);
     } else {
         // login failed
-        resp.render("login", {
+        res.render("login", {
             title: "Login Page",
             errorMessage: "Login Incorrect.  Please try again."
         });
@@ -302,9 +350,9 @@ app.post("/processLogin", function (req, resp) {
 });
 
 // Signout get
-app.get("/signout", function (req, resp) {
+app.get("/signout", function (req, res) {
     req.session.username = undefined;
-    resp.render("index", {
+    res.render("index", {
         title: "Index",
         description: "You have signed out.",
         username: undefined,
@@ -312,18 +360,18 @@ app.get("/signout", function (req, resp) {
     });
 });
 
-app.get("/register", function (request, response) {
-    response.render("register", {
+app.get("/register", function (req, res) {
+    res.render("register", {
         title: "Register"
     });
 });
 
-app.post("/processRegistration", function (request, response) {
-    var username = request.body.username;
-    var password = request.body.pwd;
+app.post("/processRegistration", function (req, res) {
+    var username = req.body.username;
+    var password = req.body.pwd;
 
     if (userExists(username)) {
-        response.render("register", {
+        res.render("register", {
             title: "Register",
             errorMessage: "Username in use"
         });
@@ -337,12 +385,12 @@ app.post("/processRegistration", function (request, response) {
             if (error) {
                 // insert failed
                 console.log("error while adding student:", error);
-                reloadStudentList(request, response, "Unable to add student");
+                reloadStudentList(req, res, "Unable to add student");
             } else {
                 // insert successful
-                request.session.username = username;
+                req.session.username = username;
 
-                response.render("registerConfirm", {
+                res.render("registerConfirm", {
                     username: username,
                     title: "Welcome aboard!"
                 });
@@ -354,8 +402,8 @@ app.post("/processRegistration", function (request, response) {
     }
 });
 
-app.get("/dummymessage", function (req, resp) {
-    resp.send("Hello from Node.js and Express");
+app.get("/dummymessage", function (req, res) {
+    res.send("Hello from Node.js and Express");
 });
 
 app.set("port", process.env.PORT || 3000);
