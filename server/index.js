@@ -173,6 +173,7 @@ function queryByName(name) {
 app.get('/admin', function (req, res) {
     username = req.session.username;
     if (username === 'admin') {
+        console.log(req.headers.referer);
         res.render("admin", {
             title: "admin",
             description: "Displaying all items.",
@@ -316,6 +317,7 @@ app.get("/about", function (req, res) {
 });
 
 app.get("/login", function (req, res) {
+    console.log(req.headers);
     res.render("login", {
         title: "Login"
     });
