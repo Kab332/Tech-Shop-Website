@@ -67,7 +67,12 @@ var userSchema = new Schema({
         unique: true,
         index: true
     },
-    hashedPassword: String
+    hashedPassword: String,
+    addres: String,
+    country: String,
+    province: String,
+    city: String,
+    zip: String
 }, {
     collection: "users"
 });
@@ -224,7 +229,6 @@ app.get('/admin', function (req, res) {
 
 app.post('/search', function (req, res) {
     username = req.session.username;
-
     if (req.body.searchValue == "all") {
         Item.find({}).then(function (results) {
             res.render("index", {
@@ -363,11 +367,6 @@ app.get("/login", function (req, res) {
         title: "Login"
     });
 });
-//called after the form is submited
-app.get("/processLogin", function (req, res) {
-    // console.log(req.body);
-    console.log("/processLogin (GET): username " + req.query.username);
-});
 
 //used for form submission
 app.post("/processLogin", function (req, res) {
@@ -410,42 +409,42 @@ app.get("/register", function (req, res) {
 });
 
 app.post("/processRegistration", function (req, res) {
-    var newUser = {
+    res.send(req.body);
+    // var newUser = {
 
-    }
-    var username = req.body.username;
-    var password = req.body.pwd;
+    // }
+    // var username = req.body.username;
+    // var password = req.body.pwd;
 
-    if (userExists(username)) {
-        res.render("register", {
-            title: "Register",
-            errorMessage: "Username in use"
-        });
-    } else {
-        usernames.push(username);
-        var u = new User({
-            uame: username,
-            hashedPassword: password
-        });
-        u.save(function (error) {
-            if (error) {
-                // insert failed
-                console.log("error while adding student:", error);
-                reloadStudentList(req, res, "Unable to add student");
-            } else {
-                // insert successful
-                req.session.username = username;
+    // if (userExists(username)) {
+    //     res.render("register", {
+    //         title: "Register",
+    //         errorMessage: "Username in use"
+    //     });
+    // } else {
+    //     usernames.push(username);
+    //     var u = new User({
+    //         uame: username,
+    //         hashedPassword: password
+    //     });
+    //     u.save(function (error) {
+    //         if (error) {
+    //             // insert failed
+    //             console.log("error while adding student:", error);
+    //             reloadStudentList(req, res, "Unable to add student");
+    //         } else {
+    //             // insert successful
+    //             req.session.username = username;
 
-                res.render("registerConfirm", {
-                    username: username,
-                    title: "Welcome aboard!"
-                });
-            }
-        });
+    //             res.render("registerConfirm", {
+    //                 username: username,
+    //                 title: "Welcome aboard!"
+    //             });
+    //         }
+    //     });
 
-        console.log("username: " + username);
-        console.log("password: " + password);
-    }
+    //     console.log("username: " + username);
+    //     console.log("password: " + password);
 });
 
 app.get("/dummymessage", function (req, res) {
