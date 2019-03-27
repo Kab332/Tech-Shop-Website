@@ -1,7 +1,7 @@
-//Add bootstrap to page
-var $ = require('jquery');
-window.$ = $;
-require('bootstrap');
+// //Add bootstrap to page
+// var $ = require('jquery');
+// window.$ = $;
+// require('bootstrap');
 
 $(window).ready(function () {
     var form = $('#login')[0];
