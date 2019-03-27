@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var table = $(".table");
+    var userTab = $(".tab2");
 
 
     // var form = $("<forms>")

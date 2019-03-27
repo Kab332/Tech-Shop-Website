@@ -57,12 +57,16 @@ var items = [];
 // database schemas
 var Schema = mongoose.Schema;
 var userSchema = new Schema({
-    uname: {
+    username: {
         type: String,
         unique: true,
         index: true
     },
-    email: String,
+    email: {
+        type: String,
+        unique: true,
+        index: true
+    },
     hashedPassword: String
 }, {
     collection: "users"
@@ -136,7 +140,7 @@ app.get("/items/:id", function (req, res) {
         });
     }
     if (query == '' || query == 'undefinded') {
-        console.error('somthing badhappened');
+        console.error('somthing bad happened');
     } else {
         query.exec(function (err, item) {
             if (err)
@@ -155,18 +159,45 @@ app.get("/items/:id", function (req, res) {
 //     });
 // });
 
-
-app.get('/users/all', function (req, res) {
-    User.find({}).then(function (err, item) {
-        if (err)
-            res.send(err);
-        res.json(item);
-    });
+app.get("/users/:id", function (req, res) {
+    console.log(req.params.id);
+    var id = req.params.id;
+    var query;
+    if (id == 'ALL') {
+        query = User.find({});
+    } else {
+        query = User.find({
+            username: req.params.id
+        });
+    }
+    if (query == '' || query == 'undefinded') {
+        console.error('somthing bad happened');
+    } else {
+        query.exec(function (err, item) {
+            if (err)
+                res.send(err);
+            res.json(item);
+        });
+    }
 });
 
-function queryByName(name) {
+// app.get('/users/all', function (req, res) {
+//     User.find({}).then(function (err, item) {
+//         if (err)
+//             res.send(err);
+//         res.json(item);
+//     });
+// });
+
+function queryItemByName(name) {
     return Item.find({
         name: name
+    });
+}
+
+function queryUserByName(name) {
+    return User.find({
+        username: name
     });
 }
 
@@ -178,7 +209,6 @@ app.get('/admin', function (req, res) {
             title: "admin",
             description: "Displaying all items.",
             username: username
-            // tableItems: results
         });
     } else {
         Item.find({}).then(function (results) {
@@ -246,11 +276,22 @@ app.post('/addItem', function (req, res) {
                     reloadItemList(req, res, 'Unable to add item');
                 } else {
                     // insert successful
-                    reloadItemList(req, res, 'Item added');
+                    // reloadItemList(req, res, 'Item added');
+                    res.render("admin", {
+                        title: "admin",
+                        resMessage: newItem.name + " added"
+                    });
+
                 }
             });
         } else {
-            res.send(req.headers);
+            // res.redirect(req.headers.referer);
+            res.render("admin", {
+                title: "admin",
+                resMessage: "Item " + newItem.name + " already exists"
+            });
+
+            // res.send(req.headers);
         }
     });
 });
@@ -369,6 +410,9 @@ app.get("/register", function (req, res) {
 });
 
 app.post("/processRegistration", function (req, res) {
+    var newUser = {
+
+    }
     var username = req.body.username;
     var password = req.body.pwd;
 

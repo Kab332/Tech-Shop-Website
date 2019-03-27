@@ -6,9 +6,9 @@ block content
    body
       div(class="container-fluid")
          h1= title
-         if (responseMessage)
+         if (resMessage)
             div(class="error")
-               each line in responseMessage.split("\n")
+               each line in resMessage.split("\n")
                   p= line
          p Class list for #{username}:
          
@@ -38,9 +38,11 @@ block content
 
          ul.nav.nav-tabs
             li.nav-item
-               a.nav-link.active(href='/admin') Items
+               //- a.nav-link.active(href='/admin') Items
+               button(class="tab") Items
             li.nav-items
-               a.nav-link(href='/admin') Users
+               //- a.nav-link(href='/admin') Users
+               button(class="tab2") Users
 
             table(id="table" class="table")
                tr
@@ -54,25 +56,3 @@ block content
                         class="form")
                         button(class="control row 3") Remove All
             
-               //- each item in tableItems
-               //-    tr
-               //-       td= item.name
-               //-       td= item.quantity
-               //-       td= item.date
-               //-       td 
-               //-          form(method="post",
-               //-             action="/removeItem"
-               //-             class="form")
-               //-             input(type="hidden", name="name", value=item.name)
-               //-             button(class="control row3") Remove
-
-         //- if (username === 'admin')
-               input(type="date",
-                     id="date",
-                     name="date",
-                     placeholder="date",
-                     class="control row2")
-
-               button(class="control row3") Add
-            
-            //- if (username === 'admin')
