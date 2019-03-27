@@ -9,11 +9,9 @@ block content
     .signup
       form#signUpForm.needs-validation(method='POST', action='/processRegistration', novalidate='')
         .form-row
-          h4 LOGO
-        .form-row
           .form-group.col-md-6
             label(for='inputEmail') Email
-            input#inputEmail.form-control(type='email', placeholder='Email')
+            input#inputEmail.form-control(type='email', name="email", placeholder='Email' required='')
             .valid-feedback
               | Looks good!
             .invalid-feedback
@@ -32,49 +30,52 @@ block content
               | Looks good!
             .invalid-feedback
               | Please enter a password.
-          .form-group.col-md-6
-            label(for='inputPassword2') Confirm Password
-            input#inputPassword2.form-control(type='password', placeholder='Retype Password', autocomplete='new-password')
         .form-group
           label(for='inputAddress') Address
-          input#inputAddress.form-control(type='text', placeholder='1234 Main St')
+          input#inputAddress.form-control(type='text', name="address", placeholder='1234 Main St' required)
           .valid-feedback
             | Looks good!
           .invalid-feedback
             | Please add an address.
-        .form-group
-          label(for='inputAddress2') Address 2
-          input#inputAddress2.form-control(type='text', placeholder='Apartment, studio, or floor')
         .form-row
-          .form-group.col-md-6
-            label(for='inputCity') City
-            input#inputCity.form-control(type='text')
+          .form-group.col-md-4
+            label(for='inputCountry') Country
+            input#inputCountry.form-control(type='text', name="country" required)
             .valid-feedback
               | Looks good!
             .invalid-feedback
               | Please enter the city.
           // make render list based on the Country selected
-          .form-group.col-md-4
+          .form-group.col-md-3
             label(for='inputState') State
-            select#inputState.form-control
-              option(selected='') Choose...
-              option ...
-          .form-group.col-md-2
-            label(for='inputZip') Zip
-            input#inputZip.form-control(type='text')
-        .form-group
-          .form-check
-            input#gridCheck.form-check-input(type='checkbox')
-            label.form-check-label(for='gridCheck')
-              | Check me out
+            input#inputState.form-control(type='text', name="state" required)
             .valid-feedback
               | Looks good!
             .invalid-feedback
-              | Please click the check me out box.
+              | Please enter the city.
+          .form-group.col-md-3
+            label(for='inputCity') City
+            input#inputCity.form-control(type='text', name="city" required)
+            .valid-feedback
+              | Looks good!
+            .invalid-feedback
+              | Please enter the city.
+          .form-group.col-md-2
+            label(for='inputZip') Zip
+            input#inputZip.form-control(type='text', name="zip" required)
+        .form-group
+          .form-check
+            input#gridCheck.form-check-input(type='checkbox' required)
+            label.form-check-label(for='gridCheck')
+              | Agree to terms and services
+            .valid-feedback
+              | Looks good!
+            .invalid-feedback
+              | Please click the terms abd services box.
         .form-row
           .form-group.col-md-4
             a(href='/login') Already have an acount?
-        button.btn.btn-primary(type='submit') Sign in
+        button.btn.btn-primary(type='submit') Sign Up
 
         
-        //- script(src="js/signup.js")
+        script(src="js/signup.js")
