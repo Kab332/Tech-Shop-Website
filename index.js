@@ -5,8 +5,6 @@ var session = require("express-session");
 var bodyParser = require("body-parser");
 var uuid = require("uuid/v1");
 var mongoose = require("mongoose");
-var passwordHash = require("password-hash");
-var passwordUnhash = require("./node_modules/password-hash/lib/password-hash");
 
 //database config
 mongoose.Promise = global.Promise;
@@ -197,6 +195,13 @@ app.get("/users/:id", function (req, res) {
 //     });
 // });
 
+app.get('/user', function (req, res) {
+    res.render("users", {
+        title: "users",
+        message: "test user page"
+    });
+});
+
 function queryItemByName(name) {
     return Item.find({
         name: name
@@ -383,6 +388,7 @@ app.get("/login", function (req, res) {
 //used for form submission
 app.post("/processLogin", function (req, res) {
     console.log("/processLogin (POST): username: " + req.body.username);
+    //check if admin credentials
     if (req.body.username === "admin" && req.body.password === "admin") {
         var username = req.body.username;
         req.session.username = username;
@@ -395,11 +401,32 @@ app.post("/processLogin", function (req, res) {
         });
         console.log(username);
     } else {
-        // login failed
-        res.render("login", {
-            title: "Login Page",
-            errorMessage: "Login Incorrect.  Please try again."
+        //check if its valid user name
+        queryUserByUserName(req.body.username).exec(function (err, result) {
+            if (err) {
+                console.error(err);
+            }
+            //username doesnt exist
+            if (result.length == 0) {
+                res.render("login", {
+                    title: "Login Page",
+                    errorMessage: "Login Incorrect.  Please try again.",
+                    loginError: true
+                });
+            } else {
+                res.render("index", {
+                    title: "Hello",
+                    description: "",
+                    username: req.body.username,
+                    tableItems: []
+                });
+            }
         });
+        // // login failed
+        // res.render("login", {
+        //     title: "Login Page",
+        //     errorMessage: "Login Incorrect.  Please try again."
+        // });
     }
 });
 
@@ -426,7 +453,7 @@ app.post("/processRegistration", function (req, res) {
     var newUser = new User({
         username: req.body.username,
         email: req.body.email,
-        hashedPassword: req.body.pwd,
+        hashedPassword: passwordHash.generate(req.body.pwd),
         address: req.body.address,
         country: req.body.country,
         province: req.body.state,
@@ -437,7 +464,7 @@ app.post("/processRegistration", function (req, res) {
         if (err) {
             console.log(err)
         } else {
-            res.redirect('localhost:3000/users/ALL');
+            // res.redirect('localhost:3000/users/ALL');
         }
     });
     // var username = req.body.username;
