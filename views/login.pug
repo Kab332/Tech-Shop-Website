@@ -10,11 +10,14 @@ block content
         .loginBox
           .form-group
             label(for='uName') LOGO
-            input#userName.form-control(type='userName', name='username', placeholder='Username or Email', required='')
+            input#userName.form-control(type='userName', name='username', placeholder='Username', required='')
+            if (loginError)
+              .invalid-feedback
+              | Incorrect User Name and/or Password
             .valid-feedback
               | Looks good!
             .invalid-feedback
-              | Please enter your user name or email.
+              | Please enter your user name.
           .form-group
             input#passWord.form-control(type='password', name='password', placeholder='Password', autocomplete='new-password', required='')
             .valid-feedback

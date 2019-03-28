@@ -416,10 +416,13 @@ app.post("/processLogin", function (req, res) {
             } else if (result.length > 1) {
                 console.error("server error");
             } else {
+                var username = req.body.username;
+                req.session.username = username;
+
                 res.render("index", {
                     title: "Hello",
                     description: "",
-                    username: req.body.username,
+                    username: username,
                     tableItems: []
                 });
             }
@@ -451,7 +454,7 @@ app.get("/register", function (req, res) {
 });
 
 app.post("/processRegistration", function (req, res) {
-    res.send(req.body);
+    // res.send(req.body);
     var newUser = new User({
         username: req.body.username,
         email: req.body.email,
@@ -462,45 +465,24 @@ app.post("/processRegistration", function (req, res) {
         city: req.body.city,
         zip: req.body.zip
     });
-    newUser.save(function (err) {
-        if (err) {
-            console.log(err)
+    queryUserByUserName(newUser.username).exec(function (err, result) {
+        //username already exists
+        if (result.length > 0) {
+            res.render("register", {
+                title: 'register',
+                errorMessage: 'user with that name already exists',
+                registerError: true
+            });
         } else {
-            // res.redirect('localhost:3000/users/ALL');
+            newUser.save(function (err) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    // res.redirect('localhost:3000/users/ALL');
+                }
+            });
         }
     });
-    // var username = req.body.username;
-    // var password = req.body.pwd;
-
-    // if (userExists(username)) {
-    //     res.render("register", {
-    //         title: "Register",
-    //         errorMessage: "Username in use"
-    //     });
-    // } else {
-    //     usernames.push(username);
-    //     var u = new User({
-    //         uame: username,
-    //         hashedPassword: password
-    //     });
-    //     u.save(function (error) {
-    //         if (error) {
-    //             // insert failed
-    //             console.log("error while adding student:", error);
-    //             reloadStudentList(req, res, "Unable to add student");
-    //         } else {
-    //             // insert successful
-    //             req.session.username = username;
-
-    //             res.render("registerConfirm", {
-    //                 username: username,
-    //                 title: "Welcome aboard!"
-    //             });
-    //         }
-    //     });
-
-    //     console.log("username: " + username);
-    //     console.log("password: " + password);
 });
 
 app.get("/dummymessage", function (req, res) {
