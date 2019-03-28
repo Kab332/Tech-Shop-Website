@@ -313,6 +313,32 @@ app.post('/addItem', function (req, res) {
     });
 });
 
+app.post('/addToCart', function (req, res) {
+    var data = {
+        name: req.body.name,
+        quantity: req.body.quantity,
+    };
+
+    console.log(req);
+
+    console.log("\nCurrent: " + req.session.cart);
+
+    if (req.session.cart == undefined) {
+        req.session.cart = JSON.stringify(data) + '\n';
+    } else {
+        req.session.cart += JSON.stringify(data) + '\n';
+    }
+
+    console.log("\nAfter: " + req.session.cart);
+
+    res.render("index", {
+        title: "Index",
+        description: req.body.name + " has been added to cart",
+        username: req.session.username,
+        tableItems: JSON.parse(req.body.tableItems)
+    })
+});
+
 app.post('/updateItems', function (req, res) {
     username = req.session.username;
     var resultMessage = "";

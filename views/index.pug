@@ -28,12 +28,16 @@ block content
             tr
                td= item.name
                td= item.quantity
-               if (username != undefined && item.quantity == 0)
-                  td Sold Out               
-               else if(username != undefined)
+               if(username != undefined)
                   td
                      form(method='post',
                         action='/addToCart',
                         class='form')
                         input(type="hidden", name="name", value=item.name)
-                        button(class="addButton", name="Add") Add
+                        input(type="hidden", name="quantity", value=item.quantity)
+                        input(type="hidden", name="tableItems", value=JSON.stringify(tableItems))
+                        if(item.quantity == 0)
+                           button(class="cartButton", name="cartButton") Order
+                        else                           
+                           button(class="cartButton", name="cartButton") Add
+                           
