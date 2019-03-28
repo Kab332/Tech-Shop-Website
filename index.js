@@ -407,12 +407,14 @@ app.post("/processLogin", function (req, res) {
                 console.error(err);
             }
             //username doesnt exist
-            if (result.length == 0) {
+            if (result.length == 0 || req.body.password != result[0].hashedPassword) {
                 res.render("login", {
                     title: "Login Page",
                     errorMessage: "Login Incorrect.  Please try again.",
                     loginError: true
                 });
+            } else if (result.length > 1) {
+                console.error("server error");
             } else {
                 res.render("index", {
                     title: "Hello",
@@ -453,7 +455,7 @@ app.post("/processRegistration", function (req, res) {
     var newUser = new User({
         username: req.body.username,
         email: req.body.email,
-        hashedPassword: passwordHash.generate(req.body.pwd),
+        hashedPassword: req.body.pwd,
         address: req.body.address,
         country: req.body.country,
         province: req.body.state,
