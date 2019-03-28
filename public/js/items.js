@@ -8,6 +8,14 @@ $(document).ready(function() {
     var lastCell;
     var input = $("<input type=\"text\">");
 
+    // If there is a message from an Ajax call in the local storage, display it on the browser page
+    if (localStorage.getItem("Message")) {
+        $((localStorage.getItem("Message")).split("\n")).each(function() {
+            $("#message").append("<p>" + this + "</p>");
+        });
+        localStorage.clear();
+    }
+
     /* When a table cell in the first three columns (not including the header row) is clicked,  *
      * an input box appears that allows the user to change the value of the cell.               */ 
     $(table).click(function (event) {
@@ -61,14 +69,15 @@ function submitUpdateForm() {
     /* Sending an ajax request to update the items in the database using the values *
      * of the items in the client side table.                                       */
     $.ajax({
-        type: "POST",
+        type: 'POST',
         url: '/updateItems',
         data: tableData,
-        dataType: "json",
+        dataType: 'json',
         cache: false,
         contentType: 'application/json',
         success: function(result){
-            document.location.href = '/items';
+            localStorage.setItem("Message", result);        // Storing the reponse from the Ajax call to be used after reloading the page
+            document.location.reload();
         }
     });
 }

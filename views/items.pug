@@ -6,10 +6,13 @@ block content
    body
       div(class="container-fluid")
          h1= title
+         button(class="control row3" name="Update" onClick="submitUpdateForm()") Update
          if (responseMessage)
             div(class="error")
                each line in responseMessage.split("\n")
                   p= line
+         else
+            div(id="message")
          p Class list for #{username}:
          
          form(method="post",
@@ -34,7 +37,7 @@ block content
                placeholder="date",
                class="control row2")
             button(class="control row3" name="Add") Add
-            button(class="control row3" name="Update" onClick="submitUpdateForm()") Update
+         
 
          table(id="table" class="table")
             tr

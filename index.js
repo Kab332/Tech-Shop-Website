@@ -316,8 +316,9 @@ app.post('/addItem', function (req, res) {
 
 app.post('/updateItems', function (req, res) {
     username = req.session.username;
+    var resultMessage = "";
     var rows = req.body.rows;
-    var count = 1;
+    var errorCount = 0, successCount = 0;
 
     Item.find({}).then(function (results) {
         for (var i = 0; i < results.length; i++) {
@@ -333,17 +334,22 @@ app.post('/updateItems', function (req, res) {
                 newData,
                 function (error, num) {
                     if (error != null) {
-                        console.log("Update error for row " + count + ": " + error);
-                        count++;
+                        resultMessage = "Successful for " + successCount + " row(s)\nError for " + (errorCount + 1) + " row(s)";
+                        errorCount++;
+                        if ((errorCount + successCount) == (results.length)) { 
+                            res.json(resultMessage); 
+                        }
                     } else {
-                        console.log("Update successful for row " + count);
-                        count++;
+                        resultMessage = "Successful for " + (successCount + 1) + " row(s)\nError for " + errorCount + " row(s)";
+                        successCount++;
+                        if ((errorCount + successCount) == (results.length)) { 
+                            res.json(resultMessage); 
+                        }
                     }
                 }
             );
         }
     });
-    res.json("Done");
 });
 
 app.post('/removeItem', function (req, res) {
