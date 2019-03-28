@@ -478,7 +478,15 @@ app.post("/processRegistration", function (req, res) {
                 if (err) {
                     console.log(err)
                 } else {
-                    // res.redirect('localhost:3000/users/ALL');
+                    var username = newUser.username;
+                    req.session.username = username;
+
+                    res.render("index", {
+                        title: "Hello",
+                        description: "",
+                        username: username,
+                        tableItems: []
+                    });
                 }
             });
         }
