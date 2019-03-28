@@ -21,8 +21,19 @@ block content
             tr
                th Name
                th Quantity
+               if(username != undefined)
+                  th Add to Cart?
    
          each item in tableItems
             tr
                td= item.name
                td= item.quantity
+               if (username != undefined && item.quantity == 0)
+                  td Sold Out               
+               else if(username != undefined)
+                  td
+                     form(method='post',
+                        action='/addToCart',
+                        class='form')
+                        input(type="hidden", name="name", value=item.name)
+                        button(class="addButton", name="Add") Add

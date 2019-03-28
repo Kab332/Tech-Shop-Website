@@ -99,3 +99,47 @@ $(document).ready(function () {
 //         }
 //     });
 // }
+
+
+
+// A function that is called when the update button is pressed on the items page
+function submitUpdateForm() {
+    var count = 0;
+    var tableData = '{ "rows": [';
+
+    /* Getting the name, quantity and date values of every row after the header row and placing them    *
+     * in a tableData variable                                                                          */
+    $("#table tr").each(function () {
+        var rowContents = $(this).children();
+        var rowData = {
+            name: rowContents[0].innerHTML,
+            quantity: rowContents[1].innerHTML,
+            date: rowContents[2].innerHTML
+        };
+
+        if (count > 0 && count <= 1) {
+            tableData += JSON.stringify(rowData);
+        } else if (count > 1) {
+            tableData += ',';
+            tableData += JSON.stringify(rowData);
+        } 
+        count++;
+    });
+
+    tableData +=' ]}';
+
+    /* Sending an ajax request to update the items in the database using the values *
+     * of the items in the client side table.                                       */
+    $.ajax({
+        type: 'POST',
+        url: '/updateItems',
+        data: tableData,
+        dataType: 'json',
+        cache: false,
+        contentType: 'application/json',
+        success: function(result){
+            localStorage.setItem("Message", result);        // Storing the reponse from the Ajax call to be used after reloading the page
+            document.location.reload();
+        }
+    });
+}

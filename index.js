@@ -299,7 +299,6 @@ app.post('/addItem', function (req, res) {
                         title: "admin",
                         resMessage: newItem.name + " added"
                     });
-
                 }
             });
         } else {
