@@ -302,13 +302,10 @@ app.post('/addItem', function (req, res) {
                 }
             });
         } else {
-            // res.redirect(req.headers.referer);
             res.render("admin", {
                 title: "admin",
                 resMessage: "Item " + newItem.name + " already exists"
             });
-
-            // res.send(req.headers);
         }
     });
 });
@@ -319,17 +316,15 @@ app.post('/addToCart', function (req, res) {
         quantity: req.body.quantity,
     };
 
-    console.log(req);
-
-    console.log("\nCurrent: " + req.session.cart);
+    // console.log("\nCurrent: " + JSON.stringify(req.session.cart));
 
     if (req.session.cart == undefined) {
-        req.session.cart = "[" + JSON.stringify(data);
+        req.session.cart = [data];
     } else {
-        req.session.cart += ", " + JSON.stringify(data);
+        req.session.cart.push(data);
     }
 
-    console.log("\nAfter: " + req.session.cart);
+    // console.log("\nAfter: " + JSON.stringify(req.session.cart));
 
     res.render("index", {
         title: "Index",
@@ -399,6 +394,29 @@ app.post('/removeAllItems', function (req, res) {
             reloadItemList(req, res, 'All items removed.');
         }
     });
+});
+
+app.post('/removeFromCart', function (req, res) {
+    var cart = req.session.cart;
+
+    // console.log(cart);
+    // console.log(req.body.name);
+
+    var index = cart.findIndex(obj => obj.name === req.body.name);
+    if (index != undefined) {
+        cart.splice(index, 1);
+        if (cart.length == 0) {
+            cart = [];
+        }
+        req.session.cart = cart;
+    }
+
+    res.render('cart', {
+        title: 'Cart',
+        description: 'There are ' + cart.length + ' item(s) in the cart',
+        username: req.session.username,
+        tableItems: cart
+    })
 });
 
 app.get("/about", function (req, res) {
@@ -529,7 +547,7 @@ app.get('/cart', function (req, res) {
     var cart = [];
 
     if (req.session.cart != undefined) {
-        cart = JSON.parse(req.session.cart + ']');
+        cart = req.session.cart;
     }
 
     res.render('cart', {
