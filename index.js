@@ -123,6 +123,7 @@ function reloadItemList(req, res, resMessage) {
 }
 
 app.get("/items", function (req, res) {
+    username = req.session.username;
     reloadItemList(req, res, "");
 });
 // app.get('/items/all', function (req, res) {
@@ -269,7 +270,7 @@ app.post('/addItem', function (req, res) {
         quantity: req.body.quantity,
         date: req.body.date
     });
-    queryByName(newItem.name).exec(function (err, result) {
+    queryItemByName(newItem.name).exec(function (err, result) {
         if (err)
             console.error(err);
         if (result.length == 0) {
@@ -301,6 +302,7 @@ app.post('/addItem', function (req, res) {
 });
 
 app.post('/updateItems', function (req, res) {
+    username = req.session.username;
     var rows = req.body.rows;
     var count = 1;
 
@@ -356,12 +358,14 @@ app.post('/removeAllItems', function (req, res) {
 });
 
 app.get("/about", function (req, res) {
+    username = req.session.username;
     res.render("about", {
         title: "About"
     });
 });
 
 app.get("/login", function (req, res) {
+    username = req.session.username;
     console.log(req.headers);
     res.render("login", {
         title: "Login"
@@ -403,6 +407,7 @@ app.get("/signout", function (req, res) {
 });
 
 app.get("/register", function (req, res) {
+    username = req.session.username;
     res.render("register", {
         title: "Register"
     });
