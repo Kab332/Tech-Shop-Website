@@ -1,0 +1,25 @@
+extends layout
+block content
+    div(class="container-fluid")
+        h1 Cart
+        p= description
+
+        table(id="table" class="table")
+            if(tableItems.length > 0)
+                tr
+                    th Name
+                    th Quantity
+                    th Remove?
+
+            each item in tableItems
+                tr
+                    td= item.name
+                    td= item.quantity
+                    if(username != undefined)
+                        td
+                            form(method='post',
+                            action='/removeFromCart',
+                            class='form')
+                            input(type="hidden", name="name", value=item.name)
+                            input(type="hidden", name="quantity", value=item.quantity)
+                            button(class="cartButton", name="cartButton") Remove

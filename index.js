@@ -324,9 +324,9 @@ app.post('/addToCart', function (req, res) {
     console.log("\nCurrent: " + req.session.cart);
 
     if (req.session.cart == undefined) {
-        req.session.cart = JSON.stringify(data) + '\n';
+        req.session.cart = "[" + JSON.stringify(data);
     } else {
-        req.session.cart += JSON.stringify(data) + '\n';
+        req.session.cart += ", " + JSON.stringify(data);
     }
 
     console.log("\nAfter: " + req.session.cart);
@@ -522,6 +522,22 @@ app.post("/processRegistration", function (req, res) {
             });
         }
     });
+});
+
+app.get('/cart', function (req, res) {
+    username = req.session.username;
+    var cart = [];
+
+    if (req.session.cart != undefined) {
+        cart = JSON.parse(req.session.cart + ']');
+    }
+
+    res.render('cart', {
+        title: 'Cart',
+        description: 'There are ' + cart.length + ' item(s) in the cart',
+        username: username,
+        tableItems: cart
+    })
 });
 
 app.get("/dummymessage", function (req, res) {

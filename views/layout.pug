@@ -40,10 +40,11 @@ html
                             a(href="/login" class="nav-link login") Login
                         li(class="nav-item")
                             a(href="/register" class="nav-link register") Register
-                    li(class="nav-item")
-                        a(href="#" class="nav-link")
-                            div(class="cart")
-                                i.fas.fa-shopping-cart
+                    if (username != undefined)
+                        li(class="nav-item")
+                            a(href="/cart" class="nav-link")
+                                div(class="cart")
+                                    i.fas.fa-shopping-cart
 
         block content
 
