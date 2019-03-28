@@ -17,6 +17,7 @@
     "jquery": "^3.3.1",
     "mongoose": "^5.4.19",
     "nodemon": "^1.18.10",
+    "password-hash": "^1.2.2",
     "pug": "^2.0.3",
     "uuid": "^3.3.2"
   }

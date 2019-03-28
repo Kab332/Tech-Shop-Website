@@ -5,6 +5,8 @@ var session = require("express-session");
 var bodyParser = require("body-parser");
 var uuid = require("uuid/v1");
 var mongoose = require("mongoose");
+var passwordHash = require("password-hash");
+var passwordUnhash = require("./node_modules/password-hash/lib/password-hash");
 
 //database config
 mongoose.Promise = global.Promise;
@@ -68,7 +70,7 @@ var userSchema = new Schema({
         index: true
     },
     hashedPassword: String,
-    addres: String,
+    address: String,
     country: String,
     province: String,
     city: String,
@@ -200,9 +202,15 @@ function queryItemByName(name) {
     });
 }
 
-function queryUserByName(name) {
+function queryUserByUserName(name) {
     return User.find({
         username: name
+    });
+}
+
+function queryUserByEmail(name) {
+    return User.find({
+        email: name
     });
 }
 
@@ -269,7 +277,7 @@ app.post('/addItem', function (req, res) {
         quantity: req.body.quantity,
         date: req.body.date
     });
-    queryByName(newItem.name).exec(function (err, result) {
+    queryItemByName(newItem.name).exec(function (err, result) {
         if (err)
             console.error(err);
         if (result.length == 0) {
@@ -410,9 +418,23 @@ app.get("/register", function (req, res) {
 
 app.post("/processRegistration", function (req, res) {
     res.send(req.body);
-    // var newUser = {
-
-    // }
+    var newUser = new User({
+        username: req.body.username,
+        email: req.body.email,
+        hashedPassword: req.body.pwd,
+        address: req.body.address,
+        country: req.body.country,
+        province: req.body.state,
+        city: req.body.city,
+        zip: req.body.zip
+    });
+    newUser.save(function (err) {
+        if (err) {
+            console.log(err)
+        } else {
+            res.redirect('localhost:3000/users/ALL');
+        }
+    });
     // var username = req.body.username;
     // var password = req.body.pwd;
 
