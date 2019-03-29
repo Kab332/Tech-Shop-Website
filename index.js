@@ -369,12 +369,14 @@ app.post('/makeTransaction', function (req, res) {
         var items = results;
         var transactions;
 
-        User.find({username: req.session.username}).then(function (result) {
+        User.find({
+            username: req.session.username
+        }).then(function (result) {
             var currentUser = result[0];
             // console.log(currentUser);
             // console.log(currentUser.transactions);
             transactions = JSON.parse(currentUser.transactions);
-        
+
             for (var i = 0; i < cart.length; i++) {
                 var status = "Purchased";
 
@@ -384,36 +386,36 @@ app.post('/makeTransaction', function (req, res) {
 
                 var data = {
                     name: cart[i].name,
-                    status: status 
+                    status: status
                 };
                 transactions.push(data);
             }
 
             currentUser.transactions = JSON.stringify(transactions);
-            
+
             User.updateOne({
-                username: req.session.username
-            },
-            currentUser,
-            function (error, num) {
-                if (error != null) {
-                    res.render('cart', {
-                        title: 'Cart',
-                        description: 'Purchase unsuccessful: ' + error,
-                        username: req.session.username,
-                        tableItems: cart
-                    });                
-                } else {
-                    req.session.cart = [];
-                    res.render('cart', {
-                        title: 'Cart',
-                        description: 'Purchase Successful',
-                        username: req.session.username,
-                        tableItems: []
-                    })                
-                }
-            });            
-        }); 
+                    username: req.session.username
+                },
+                currentUser,
+                function (error, num) {
+                    if (error != null) {
+                        res.render('cart', {
+                            title: 'Cart',
+                            description: 'Purchase unsuccessful: ' + error,
+                            username: req.session.username,
+                            tableItems: cart
+                        });
+                    } else {
+                        req.session.cart = [];
+                        res.render('cart', {
+                            title: 'Cart',
+                            description: 'Purchase Successful',
+                            username: req.session.username,
+                            tableItems: []
+                        })
+                    }
+                });
+        });
     });
 });
 
@@ -421,6 +423,8 @@ app.post('/updateItems', function (req, res) {
     username = req.session.username;
     var resultMessage = "";
     var rows = req.body.rows;
+    console.log("test");
+    console.log(rows);
     var errorCount = 0,
         successCount = 0;
 
@@ -429,8 +433,11 @@ app.post('/updateItems', function (req, res) {
             var newData = {
                 name: rows[i].name,
                 quantity: rows[i].quantity,
-                date: rows[i].date
+                date: rows[i].date,
+                type: rows[i].type
             };
+
+            // console.log(newData);
 
             Item.updateOne({
                     name: results[i].name
@@ -459,6 +466,8 @@ app.post('/updateUsers', function (req, res) {
     username = req.session.username;
     var resultMessage = "";
     var rows = req.body.rows;
+    console.log("test");
+    console.log(rows);
     var errorCount = 0,
         successCount = 0;
 
@@ -476,8 +485,8 @@ app.post('/updateUsers', function (req, res) {
                 city: rows[i].city,
                 zip: rows[i].zip
             };
-
-            Item.updateOne({
+            console.log(newData);
+            User.updateOne({
                     name: results[i].name
                 },
                 newData,
@@ -564,7 +573,9 @@ app.get("/login", function (req, res) {
 
 app.get("/transactionHistory", function (req, res) {
     username = req.session.username;
-    User.find({username: req.session.username}).then(function (result) {    
+    User.find({
+        username: req.session.username
+    }).then(function (result) {
         var transactions = JSON.parse(result[0].transactions);
         res.render("transactionHistory", {
             description: "There are " + transactions.length + " item(s) in transaction history",

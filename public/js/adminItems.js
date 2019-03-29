@@ -26,6 +26,7 @@ $(document).ready(function () {
                     tr.append(td);
                     table.append(tr)
                 }
+
             }
         });
     } else {
@@ -37,6 +38,7 @@ $(document).ready(function () {
                 console.log(response);
 
                 table.append('<tr><th>username</th><th>email</th><th>hashedPassword</th><th>address</th><th>country</th><th>province</th><th>city</th><th>zip</th><th>remove?</th><th><form method="post" action="/removeAllItems" class="form"><button class="control row 3">Remove All</button></th>');
+
                 //draws the table
                 for (var i = 0; i < response.length; i++) {
                     var remove = $('<form method="post" action="/removeItem" class="form">');
