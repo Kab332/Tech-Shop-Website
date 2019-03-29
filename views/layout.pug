@@ -34,6 +34,7 @@ html
                                         a(href="/admin/items" class="dropdown-item") Admin
                                     else
                                         p(class="dropdown-item")= username 
+                                    a(href="/transactionHistory" class="dropdown-item") Transactions
                                     a(href="/signout" class="dropdown-item") Sign out
                     if (username === undefined)
                         li(class="nav-item")

@@ -7,6 +7,12 @@ block content
       div(class="container-fluid")
          h1= title
          button(class="control row3" name="Update" onClick="submitUpdateForm()") Update
+ 
+         form(method="post",
+            action="/removeAllItems"
+            class="form")
+            button(class="control row 3") Remove All
+
          if (responseMessage)
             div(class="error")
                each line in responseMessage.split("\n")
@@ -37,7 +43,6 @@ block content
                placeholder="date",
                class="control row2")
             button(class="control row3" name="Add") Add
-         
 
          table(id="table" class="table")
             tr
@@ -45,11 +50,6 @@ block content
                th Quantity
                th Date
                th Remove?
-               th 
-                  form(method="post",
-                     action="/removeAllItems"
-                     class="form")
-                     button(class="control row 3") Remove All
          
             each item in items
                tr

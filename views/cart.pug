@@ -1,10 +1,10 @@
 extends layout
 block content
-    div(class="container-fluid")
+    div(class='container-fluid')
         h1 Cart
         p= description
 
-        table(id="table" class="table")
+        table(id='table' class='table')
             if(tableItems.length > 0)
                 tr
                     th Name
@@ -19,5 +19,10 @@ block content
                         form(method='post',
                             action='/removeFromCart',
                             class='form')
-                            input(type="hidden", name="name", value=item.name)
-                            button(class="cartButton", name="cartButton") Remove
+                            input(type='hidden', name='name', value=item.name)
+                            button(class='cartButton', name='cartButton') Remove
+
+        form(method='post',
+            action='/makeTransaction',
+            class='form')
+            button(class='transactionButton', name='transactionButton') Purchase All
