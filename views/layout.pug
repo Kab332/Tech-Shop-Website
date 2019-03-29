@@ -4,14 +4,14 @@ html
         title=title
         link(rel="stylesheet", href="/bootstrap/css/bootstrap.css")
         link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
-        link(rel="stylesheet", href="/css/style.css")
         link(rel="stylesheet", href="https://use.fontawesome.com/releases/v5.8.1/css/all.css", integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf", crossorigin="anonymous")
+        link(rel="stylesheet", href="/css/style.css")
 
         script(src="https://code.jquery.com/jquery-latest.min.js")
         script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js")
         script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js")
     body
-        nav(class="navbar navbar-expand-lg navbar-light bg-light")
+        nav(class="navbar navbar-expand navbar-dark bg-dark")
             div(class="navbar-collapse collapse w-100")
                 a(class="navbar-brand" href="/") ONTechShop
                 ul(class="navbar-nav")
@@ -27,8 +27,8 @@ html
                     if (username != undefined)
                         li(class="nav-item")
                             div(class="dropdown")
-                                button(class="btn btn-secondary dropdown-toggle btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-                                    img(class="icon" src="/images/user_icon.png", alt="")
+                                button(class="btn btn-secondary dropdown-toggle btn-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                                    i(class="fas fa-user", alt="")
                                 div(class="dropdown-menu" aria-labelledby="dropdownMenuButton")
                                     if (username === "admin")
                                         a(href="/admin/items" class="dropdown-item") Admin
