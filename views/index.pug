@@ -18,16 +18,16 @@ block content
             button(class="searchButton", name="Search") Search
 
       div(id="indexTableDiv" class="container-fluid")
-         table(id="searchTable" class="table table-bordered")
+         table(id="searchTable" class="table")
             if(tableItems.length > 0)
-               tr(class="thead-dark")
+               tr(class="tableHeader")
                   th Name
                   th Quantity
                   if(username != undefined)
                      th Add to Cart?
       
             each item in tableItems
-               tr(class="thead-light")
+               tr(class="tableRow")
                   td= item.name
                   td= item.quantity
                   if(username != undefined)

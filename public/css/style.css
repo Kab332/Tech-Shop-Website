@@ -57,14 +57,21 @@ body {
   border-radius: 0.3rem;
 }
 
-#searchTable th, td {
-  width: 50%;
-}
-
 /* ---------------- Index page specific CSS Ends here ----------------*/
 
 .table {
   margin-top: 1rem;
+}
+
+.tableHeader {
+  background-color: rgb(92, 102, 112);
+  color: white;
+}
+
+th, td {
+  border: 1px solid lightgrey;
+  height: auto;
+  width: auto;
 }
 
 .header {

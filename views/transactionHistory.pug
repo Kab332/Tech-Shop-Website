@@ -5,11 +5,11 @@ block content
         p= description
         table(id='table' class='table')
             if(tableItems.length > 0)
-                tr
+                tr(class="tableHeader")
                     th Name
                     th Status
 
                 each item in tableItems
-                    tr
+                    tr(class="tableRow")
                         td= item.name
                         td= item.status

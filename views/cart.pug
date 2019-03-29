@@ -6,13 +6,13 @@ block content
 
         table(id='table' class='table')
             if(tableItems.length > 0)
-                tr
+                tr(class="tableHeader")
                     th Name
                     th Quantity
                     th Remove?
 
             each item in tableItems
-                tr
+                tr(class="tableRow")
                     td= item.name
                     td= item.quantity
                     td
