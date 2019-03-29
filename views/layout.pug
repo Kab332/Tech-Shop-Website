@@ -31,7 +31,7 @@ html
                                     img(class="icon" src="/images/user_icon.png", alt="")
                                 div(class="dropdown-menu" aria-labelledby="dropdownMenuButton")
                                     if (username === "admin")
-                                        a(href="/admin" class="dropdown-item") Admin
+                                        a(href="/admin/items" class="dropdown-item") Admin
                                     else
                                         p(class="dropdown-item")= username 
                                     a(href="/signout" class="dropdown-item") Sign out

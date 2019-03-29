@@ -35,24 +35,25 @@ block content
                placeholder="date",
                class="control row2")
             button(class="control row3" name="Add") Add
-
+         
+         div(class="itemFlag")= itemFlag
          ul.nav.nav-tabs
             li.nav-item
-               //- a.nav-link.active(href='/admin') Items
-               button(class="tab") Items
+               a.nav-link.active(href='/admin/items') Items
+               //- button(class="tab") Items
             li.nav-items
-               //- a.nav-link(href='/admin') Users
-               button(class="tab2") Users
+               a.nav-link(href='/admin/users') Users
+               //- button(class="tab2") Users
 
             table(id="table" class="table")
-               tr
-                  th Name
-                  th Quantity
-                  th Date
-                  th Remove?
-                  th 
-                     form(method="post",
-                        action="/removeAllItems"
-                        class="form")
-                        button(class="control row 3") Remove All
+               //- tr
+               //-    th Name
+               //-    th Quantity
+               //-    th Date
+               //-    th Remove?
+               //-    th 
+               //-       form(method="post",
+               //-          action="/removeAllItems"
+               //-          class="form")
+               //-          button(class="control row 3") Remove All
             

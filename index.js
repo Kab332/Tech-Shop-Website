@@ -89,7 +89,8 @@ var itemSchema = new Schema({
     date: {
         type: String,
         default: Date.now
-    }
+    },
+    type: String
 }, {
     collection: "items"
 });
@@ -220,15 +221,27 @@ function queryUserByEmail(name) {
     });
 }
 
-app.get('/admin', function (req, res) {
+app.get('/admin/:id', function (req, res) {
     username = req.session.username;
+    var id = req.params.id;
     if (username === 'admin') {
-        console.log(req.headers.referer);
-        res.render("admin", {
-            title: "admin",
-            description: "Displaying all items.",
-            username: username
-        });
+        if (id == "items" || id == "") {
+            console.log(req.headers.referer);
+            res.render("admin", {
+                title: "admin",
+                description: "Displaying all items.",
+                username: username,
+                itemFlag: true
+            });
+        } else {
+            console.log(req.headers.referer);
+            res.render("admin", {
+                title: "admin",
+                description: "Displaying all users.",
+                username: username,
+                itemFlag: false
+            });
+        }
     } else {
         Item.find({}).then(function (results) {
             res.render("index", {
@@ -240,6 +253,20 @@ app.get('/admin', function (req, res) {
         });
     }
 });
+// app.get('/admin/users', function (req, res) {
+//     username = req.session.username;
+//     if (username === 'admin') {
+
+//     } else {
+//         res.render("index", {
+//             title: "Index",
+//             description: "Displaying all users.",
+//             username: username,
+//             tableItems: []
+//         });
+//     }
+// });
+
 
 app.post('/search', function (req, res) {
     username = req.session.username;
@@ -338,7 +365,8 @@ app.post('/updateItems', function (req, res) {
     username = req.session.username;
     var resultMessage = "";
     var rows = req.body.rows;
-    var errorCount = 0, successCount = 0;
+    var errorCount = 0,
+        successCount = 0;
 
     Item.find({}).then(function (results) {
         for (var i = 0; i < results.length; i++) {
@@ -356,14 +384,59 @@ app.post('/updateItems', function (req, res) {
                     if (error != null) {
                         resultMessage = "Successful for " + successCount + " row(s)\nError for " + (errorCount + 1) + " row(s)";
                         errorCount++;
-                        if ((errorCount + successCount) == (results.length)) { 
-                            res.json(resultMessage); 
+                        if ((errorCount + successCount) == (results.length)) {
+                            res.json(resultMessage);
                         }
                     } else {
                         resultMessage = "Successful for " + (successCount + 1) + " row(s)\nError for " + errorCount + " row(s)";
                         successCount++;
-                        if ((errorCount + successCount) == (results.length)) { 
-                            res.json(resultMessage); 
+                        if ((errorCount + successCount) == (results.length)) {
+                            res.json(resultMessage);
+                        }
+                    }
+                }
+            );
+        }
+    });
+});
+app.post('/updateUsers', function (req, res) {
+    username = req.session.username;
+    var resultMessage = "";
+    var rows = req.body.rows;
+    var errorCount = 0,
+        successCount = 0;
+
+    console.log("test");
+
+    User.find({}).then(function (results) {
+        for (var i = 0; i < results.length; i++) {
+            var newData = {
+                username: rows[i].username,
+                email: rows[i].email,
+                hashedPassword: rows[i].hashedPassword,
+                address: rows[i].address,
+                country: rows[i].country,
+                province: rows[i].province,
+                city: rows[i].city,
+                zip: rows[i].zip
+            };
+
+            Item.updateOne({
+                    name: results[i].name
+                },
+                newData,
+                function (error, num) {
+                    if (error != null) {
+                        resultMessage = "Successful for " + successCount + " row(s)\nError for " + (errorCount + 1) + " row(s)";
+                        errorCount++;
+                        if ((errorCount + successCount) == (results.length)) {
+                            res.json(resultMessage);
+                        }
+                    } else {
+                        resultMessage = "Successful for " + (successCount + 1) + " row(s)\nError for " + errorCount + " row(s)";
+                        successCount++;
+                        if ((errorCount + successCount) == (results.length)) {
+                            res.json(resultMessage);
                         }
                     }
                 }
