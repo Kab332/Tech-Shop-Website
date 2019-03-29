@@ -309,7 +309,8 @@ app.post('/addItem', function (req, res) {
     var newItem = new Item({
         name: req.body.name,
         quantity: req.body.quantity,
-        date: req.body.date
+        date: '',
+        type: req.body.type
     });
     queryItemByName(newItem.name).exec(function (err, result) {
         if (err)
@@ -325,7 +326,48 @@ app.post('/addItem', function (req, res) {
                     // reloadItemList(req, res, 'Item added');
                     res.render("admin", {
                         title: "admin",
-                        resMessage: newItem.name + " added"
+                        resMessage: newItem.name + " added",
+                        itemFlag: true
+                    });
+                }
+            });
+        } else {
+            res.render("admin", {
+                title: "admin",
+                resMessage: "Item " + newItem.name + " already exists"
+            });
+        }
+    });
+});
+
+app.post('/addUser', function (req, res) {
+    var newUser = new User({
+        username: req.body.username,
+        email: req.body.email,
+        hashedPassword: req.body.hashedPassword,
+        address: req.body.address,
+        country: req.body.country,
+        province: req.body.province,
+        city: req.body.city,
+        zip: req.body.zip
+    });
+    console.log(newUser.username);
+    queryUserByUserName(newUser.name).exec(function (err, result) {
+        if (err)
+            console.error(err);
+        if (result.length == 0) {
+            newUser.save(function (error) {
+                if (error) {
+                    // insert failed
+                    console.log('error while adding item:', error);
+                    reloadItemList(req, res, 'Unable to add item');
+                } else {
+                    // insert successful
+                    // reloadItemList(req, res, 'Item added');
+                    res.render("admin", {
+                        title: "admin",
+                        resMessage: newUser.name + " added",
+                        itemFlag: true
                     });
                 }
             });
@@ -504,19 +546,61 @@ app.post('/updateUsers', function (req, res) {
 
 app.post('/removeItem', function (req, res) {
     name = req.body.name;
-    Item.remove({
+    username = req.body.username;
+    console.log(name);
+    Item.deleteOne({
+        name: name
+    }, function (error) {
+        if (error) {
+            // reloadItemList(req, res, 'Unable to delete item');
+            res.send(err);
+        } else {
+            // reloadItemList(req, res, 'Item deleted');
+            res.render("admin", {
+                title: "admin",
+                description: "Displaying all items.",
+                username: username,
+                itemFlag: true
+            });
+        }
+    });
+});
+
+app.post('/removeUser', function (req, res) {
+    name = req.body.name;
+    User.deleteOne({
         name: name
     }, function (error) {
         if (error) {
             reloadItemList(req, res, 'Unable to delete item');
         } else {
-            reloadItemList(req, res, 'Item deleted');
+            res.render("admin", {
+                title: "admin",
+                description: "Displaying all items.",
+                username: username,
+                itemFlag: true
+            });
         }
     });
 });
 
 app.post('/removeAllItems', function (req, res) {
     Item.remove({}, function (error) {
+        if (error) {
+            reloadItemList(req, res, 'Unable to remove all items');
+        } else {
+            // reloadItemList(req, res, 'All items removed.');
+            res.render("admin", {
+                title: "admin",
+                description: "Displaying all items.",
+                username: username,
+                itemFlag: true
+            });
+        }
+    });
+});
+app.post('/removeAllUsers', function (req, res) {
+    User.remove({}, function (error) {
         if (error) {
             reloadItemList(req, res, 'Unable to remove all items');
         } else {

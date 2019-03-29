@@ -83,6 +83,10 @@ hr {
   width: 100%
 }
 
+.addForm {
+  display: none;
+}
+
 /* .signup h4 {
   justify-content: center;
 } */
