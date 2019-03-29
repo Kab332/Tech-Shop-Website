@@ -1,35 +1,33 @@
 extends layout
 block content
-   div(class="containerDiv")
-      //- h1= title
-      //- p= description
-      //- if (!username || (username === ''))
-      //-    p You are not logged in
-      //- else
-      //-    p You are logged in as #{username}.
+   //- h1= title
+   //- p= description
+   //- if (!username || (username === ''))
+   //-    p You are not logged in
+   //- else
+   //-    p You are logged in as #{username}.
 
-      //- a Some Store   
+   //- a Some Store   
 
-      div(id="searchDiv" class="container-fluid")
-         form(method="post",
-            action="/search"
-            class="form")
-            input(class="searchBar" name="searchValue", type='text', placeholder='Enter Search...')
-            button(class="searchButton", name="Search") Search
+   div(id="searchDiv" class="container-fluid")
+      form(method="post",
+         action="/search"
+         class="form")
+         input(class="searchBar" name="searchValue", type='text', placeholder='Enter Search...')
+         button(class="searchButton", name="Search") Search
 
-      div(id="indexTableDiv" class="container-fluid")
-         table(id="searchTable" class="table")
-            if(tableItems.length > 0)
-               tr(class="tableHeader")
-                  th Name
-                  th Quantity
-                  if(username != undefined)
-                     th Add to Cart?
-      
-            each item in tableItems
-               tr(class="tableRow")
-                  td= item.name
-                  td= item.quantity
+   div(id="tableDiv" class="container-fluid")
+      if(tableItems.length > 0)
+         each item in tableItems
+            div(id="itemDiv")
+               table(id="itemTable" class="table")
+                  tr(class="tableHeader")
+                     th= item.name
+                  tr(class="tableImageRow")
+                     td
+                        img(class="tableImage" src=item.image)
+                  tr(class="tableRow")
+                     td= 'Quantity: ' + item.quantity
                   if(username != undefined)
                      td
                         form(method='post',
@@ -39,7 +37,6 @@ block content
                            input(type="hidden", name="quantity", value=item.quantity)
                            input(type="hidden", name="tableItems", value=JSON.stringify(tableItems))
                            if(item.quantity == 0)
-                              button(class="cartButton", name="cartButton") Order
+                              button(class="cartButton", name="cartButton") Add to Cart (Order)
                            else                           
-                              button(class="cartButton", name="cartButton") Add
-                              
+                              button(class="cartButton", name="cartButton") Add to Cart

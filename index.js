@@ -91,7 +91,8 @@ var itemSchema = new Schema({
         type: String,
         default: Date.now
     },
-    type: String
+    type: String,
+    image: String
 }, {
     collection: "items"
 });
@@ -311,7 +312,8 @@ app.post('/addItem', function (req, res) {
     var newItem = new Item({
         name: req.body.name,
         quantity: req.body.quantity,
-        date: req.body.date
+        date: req.body.date,
+        image: "/images/user_icon.png"
     });
     queryItemByName(newItem.name).exec(function (err, result) {
         if (err)
@@ -586,11 +588,13 @@ app.post("/processLogin", function (req, res) {
         var username = req.body.username;
         req.session.username = username;
 
-        res.render("index", {
-            title: "Hello",
-            description: "",
-            username: username,
-            tableItems: []
+        Item.find({}).then(function(results) {
+            res.render("index", {
+                title: "Hello",
+                description: "",
+                username: username,
+                tableItems: results
+            });
         });
         console.log(username);
     } else {
@@ -612,11 +616,13 @@ app.post("/processLogin", function (req, res) {
                 var username = req.body.username;
                 req.session.username = username;
 
-                res.render("index", {
-                    title: "Hello",
-                    description: "",
-                    username: username,
-                    tableItems: []
+                Item.find({}).then(function(results){
+                    res.render("index", {
+                        title: "Hello",
+                        description: "",
+                        username: username,
+                        tableItems: results
+                    });
                 });
             }
         });
@@ -631,11 +637,13 @@ app.post("/processLogin", function (req, res) {
 // Signout get
 app.get("/signout", function (req, res) {
     req.session.username = undefined;
-    res.render("index", {
-        title: "Index",
-        description: "You have signed out.",
-        username: undefined,
-        tableItems: []
+    Item.find({}).then(function(results) {
+        res.render("index", {
+            title: "Index",
+            description: "You have signed out.",
+            username: undefined,
+            tableItems: results
+        });
     });
 });
 
@@ -675,11 +683,13 @@ app.post("/processRegistration", function (req, res) {
                     var username = newUser.username;
                     req.session.username = username;
 
-                    res.render("index", {
-                        title: "Hello",
-                        description: "",
-                        username: username,
-                        tableItems: []
+                    Item.find({}).then(function(results) {
+                        res.render("index", {
+                            title: "Hello",
+                            description: "",
+                            username: username,
+                            tableItems: results
+                        });
                     });
                 }
             });
