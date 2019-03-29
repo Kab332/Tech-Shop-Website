@@ -79,6 +79,10 @@ hr {
   border-radius: 5px;
 }
 
+.add {
+  width: 100%
+}
+
 /* .signup h4 {
   justify-content: center;
 } */

@@ -423,8 +423,6 @@ app.post('/updateItems', function (req, res) {
     username = req.session.username;
     var resultMessage = "";
     var rows = req.body.rows;
-    console.log("test");
-    console.log(rows);
     var errorCount = 0,
         successCount = 0;
 
@@ -436,8 +434,6 @@ app.post('/updateItems', function (req, res) {
                 date: rows[i].date,
                 type: rows[i].type
             };
-
-            // console.log(newData);
 
             Item.updateOne({
                     name: results[i].name
@@ -466,12 +462,8 @@ app.post('/updateUsers', function (req, res) {
     username = req.session.username;
     var resultMessage = "";
     var rows = req.body.rows;
-    console.log("test");
-    console.log(rows);
     var errorCount = 0,
         successCount = 0;
-
-    console.log("test");
 
     User.find({}).then(function (results) {
         for (var i = 0; i < results.length; i++) {
