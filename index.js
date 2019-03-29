@@ -72,7 +72,8 @@ var userSchema = new Schema({
     country: String,
     province: String,
     city: String,
-    zip: String
+    zip: String,
+    transactions: String
 }, {
     collection: "users"
 });
@@ -334,6 +335,61 @@ app.post('/addToCart', function (req, res) {
     })
 });
 
+app.post('/makeTransaction', function (req, res) {
+    var cart = req.session.cart;
+
+    Item.find({}).then(function (results) {
+        var items = results;
+        var transactions;
+
+        User.find({username: req.session.username}).then(function (result) {
+            var currentUser = result[0];
+            // console.log(currentUser);
+            // console.log(currentUser.transactions);
+            transactions = JSON.parse(currentUser.transactions);
+        
+            for (var i = 0; i < cart.length; i++) {
+                var status = "Purchased";
+
+                if (cart[i].quantity == 0) {
+                    status = "Ordered";
+                }
+
+                var data = {
+                    name: cart[i].name,
+                    status: status 
+                };
+                transactions.push(data);
+            }
+
+            currentUser.transactions = JSON.stringify(transactions);
+            
+            User.updateOne({
+                username: req.session.username
+            },
+            currentUser,
+            function (error, num) {
+                if (error != null) {
+                    res.render('cart', {
+                        title: 'Cart',
+                        description: 'Purchase unsuccessful: ' + error,
+                        username: req.session.username,
+                        tableItems: cart
+                    });                
+                } else {
+                    req.session.cart = [];
+                    res.render('cart', {
+                        title: 'Cart',
+                        description: 'Purchase Successful',
+                        username: req.session.username,
+                        tableItems: []
+                    })                
+                }
+            });            
+        }); 
+    });
+});
+
 app.post('/updateItems', function (req, res) {
     username = req.session.username;
     var resultMessage = "";
@@ -386,7 +442,6 @@ app.post('/removeItem', function (req, res) {
 });
 
 app.post('/removeAllItems', function (req, res) {
-    console.log('Reached');
     Item.remove({}, function (error) {
         if (error) {
             reloadItemList(req, res, 'Unable to remove all items');
@@ -431,6 +486,17 @@ app.get("/login", function (req, res) {
     console.log(req.headers);
     res.render("login", {
         title: "Login"
+    });
+});
+
+app.get("/transactionHistory", function (req, res) {
+    username = req.session.username;
+    User.find({username: req.session.username}).then(function (result) {    
+        var transactions = JSON.parse(result[0].transactions);
+        res.render("transactionHistory", {
+            description: "There are " + transactions.length + " item(s) in transaction history",
+            tableItems: transactions
+        });
     });
 });
 
@@ -512,7 +578,8 @@ app.post("/processRegistration", function (req, res) {
         country: req.body.country,
         province: req.body.state,
         city: req.body.city,
-        zip: req.body.zip
+        zip: req.body.zip,
+        transactions: "[]"
     });
     queryUserByUserName(newUser.username).exec(function (err, result) {
         //username already exists

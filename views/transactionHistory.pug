@@ -1,0 +1,15 @@
+extends layout
+block content
+    div(class='container-fluid')
+        h1 Transaction History
+        p= description
+        table(id='table' class='table')
+            if(tableItems.length > 0)
+                tr
+                    th Name
+                    th Status
+
+                each item in tableItems
+                    tr
+                        td= item.name
+                        td= item.status
