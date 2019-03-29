@@ -3,12 +3,19 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: rgb(245, 245, 240);
 }
 
+/* ---------------- Index page specific CSS Starts here ----------------*/
 
 .icon {
   width: 1.60rem;
   height: 1.60rem;
+}
+
+.navbar {
+  height: 3rem;
+  width: 100%;
 }
 
 .navbar-brand {
@@ -16,10 +23,14 @@ body {
   padding-bottom: 0.15rem;
 }
 
-
 .nav-item {
   padding-top: 0.15rem;
   margin-right: 0.5rem;
+}
+
+#searchDiv {
+  margin-top: 1rem;
+  width: 100%;
 }
 
 #logo {
@@ -30,6 +41,30 @@ body {
 #searchBar {
   width: 50%;
   margin-right: 0.5rem;
+}
+
+.searchBar {
+  height: 100%;
+  width: 90%;
+  margin-right: 1%;
+  border-radius: 0.3rem;
+}
+
+.searchButton {
+  height: 100%;
+  width: 9%;
+  border: 1px solid grey;
+  border-radius: 0.3rem;
+}
+
+#searchTable th, td {
+  width: 50%;
+}
+
+/* ---------------- Index page specific CSS Ends here ----------------*/
+
+.table {
+  margin-top: 1rem;
 }
 
 .header {

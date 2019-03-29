@@ -102,12 +102,14 @@ var Item = mongoose.model('item', itemSchema);
 app.get("/", function (req, res) {
     // req.session.username = 'admin';
     username = req.session.username;
-    res.render("index", {
-        title: "Index",
-        description: "This is the main page",
-        username: username,
-        tableItems: []
-    })
+    Item.find({}).then(function(results) {
+        res.render("index", {
+            title: "Index",
+            description: "This is the main page",
+            username: username,
+            tableItems: results
+        })
+    });
 });
 
 function reloadItemList(req, res, resMessage) {

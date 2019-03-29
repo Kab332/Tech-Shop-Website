@@ -1,43 +1,45 @@
 extends layout
 block content
-   div(class="container-fluid")
-      h1= title
-      p= description
-      if (!username || (username === ''))
-         p You are not logged in
-      else
-         p You are logged in as #{username}.
+   div(class="containerDiv")
+      //- h1= title
+      //- p= description
+      //- if (!username || (username === ''))
+      //-    p You are not logged in
+      //- else
+      //-    p You are logged in as #{username}.
 
-      a Some Store   
+      //- a Some Store   
 
-      form(method="post",
-         action="/search"
-         class="form")
-         input(name="searchValue", type='text', placeholder='Enter Search...')
-         button(class="searchButton", name="Search") Search
+      div(id="searchDiv" class="container-fluid")
+         form(method="post",
+            action="/search"
+            class="form")
+            input(class="searchBar" name="searchValue", type='text', placeholder='Enter Search...')
+            button(class="searchButton", name="Search") Search
 
-      table(id="table" class="table")
-         if(tableItems.length > 0)
-            tr
-               th Name
-               th Quantity
-               if(username != undefined)
-                  th Add to Cart?
-   
-         each item in tableItems
-            tr
-               td= item.name
-               td= item.quantity
-               if(username != undefined)
-                  td
-                     form(method='post',
-                        action='/addToCart',
-                        class='form')
-                        input(type="hidden", name="name", value=item.name)
-                        input(type="hidden", name="quantity", value=item.quantity)
-                        input(type="hidden", name="tableItems", value=JSON.stringify(tableItems))
-                        if(item.quantity == 0)
-                           button(class="cartButton", name="cartButton") Order
-                        else                           
-                           button(class="cartButton", name="cartButton") Add
-                           
+      div(id="indexTableDiv" class="container-fluid")
+         table(id="searchTable" class="table table-bordered")
+            if(tableItems.length > 0)
+               tr(class="thead-dark")
+                  th Name
+                  th Quantity
+                  if(username != undefined)
+                     th Add to Cart?
+      
+            each item in tableItems
+               tr(class="thead-light")
+                  td= item.name
+                  td= item.quantity
+                  if(username != undefined)
+                     td
+                        form(method='post',
+                           action='/addToCart',
+                           class='form')
+                           input(type="hidden", name="name", value=item.name)
+                           input(type="hidden", name="quantity", value=item.quantity)
+                           input(type="hidden", name="tableItems", value=JSON.stringify(tableItems))
+                           if(item.quantity == 0)
+                              button(class="cartButton", name="cartButton") Order
+                           else                           
+                              button(class="cartButton", name="cartButton") Add
+                              
