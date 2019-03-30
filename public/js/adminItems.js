@@ -30,7 +30,7 @@ $(document).ready(function () {
           remove.append(
             '<input type="hidden" name="name" value="' +
             response[i].name +
-            '"><button>Remove</button>'
+            '"><button class="controlButton">Remove</button>'
           );
           var tr = $("<tr>").append(
             "<td>" +

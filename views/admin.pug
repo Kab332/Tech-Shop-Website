@@ -7,11 +7,11 @@ block content
       div(class="container-fluid")
          div(class="headerDiv")
             h1= title
-            button(class="control row3" name="Update" onClick="submitUpdateForm()") Update
+            button(class="controlButton" name="Update" onClick="submitUpdateForm()") Update All
             form(method="post",
                action="/removeAllItems"
                class="form")
-               button(class="control row 3") Remove All
+               button(class="controlButton") Remove All
          if (resMessage)
             div(class="error")
                each line in resMessage.split("\n")

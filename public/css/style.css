@@ -6,7 +6,7 @@ body {
   background-color: rgb(245, 245, 240);
 }
 
-/* ---------------- Index page specific CSS Starts here ----------------*/
+/* ---------------- CSS for Index page starts here ----------------*/
 
 .icon {
   width: 1.60rem;
@@ -38,28 +38,24 @@ body {
   padding-right: 4rem;
 }
 
-#searchBar {
-  width: 50%;
-  margin-right: 0.5rem;
-}
-
 .searchBar {
   height: 100%;
   width: 90%;
   margin-right: 1%;
+  border: 1px ridge grey;
   border-radius: 0.3rem;
 }
 
 .searchButton {
   height: 100%;
   width: 9%;
-  border: 1px solid grey;
+  border: 1px ridge grey;
   border-radius: 0.3rem;
 }
 
-/* ---------------- Index page specific CSS Ends here ----------------*/
+/* ---------------- CSS for Index page ends here ----------------*/
 
-/* ---------------- CSS for all Tables Starts here ---------------- */
+/* ---------------- CSS for all Tables starts here ---------------- */
 
 .table {
   margin-top: 1rem;
@@ -76,9 +72,9 @@ th, td {
   width: auto;
 }
 
-/* ---------------- CSS for all Tables Ends here ---------------- */
+/* ---------------- CSS for all Tables ends here ---------------- */
 
-/* ---------------- CSS for index page items Starts here ---------------- */
+/* ---------------- CSS for index page starts here ---------------- */
 #tableDiv {
   display: flex;
   flex-wrap: wrap;
@@ -100,7 +96,24 @@ th, td {
   margin-right: 1.64%;
 }
 
-/* ---------------- CSS for index page items Ends here ---------------- */
+/* ---------------- CSS for index page ends here ---------------- */
+
+/* ---------------- CSS for admin page starts here ---------------- */
+
+.headerDiv {
+  display: flex;
+  align-items: center;
+}
+
+.controlButton {
+  height: 50%;
+  margin-left: 0.5rem;
+  border: 1px ridge grey;
+  border-radius: 0.3rem;
+}
+
+
+/* ---------------- CSS for admin page ends here ---------------- */
 
 .header {
   display: flex;
