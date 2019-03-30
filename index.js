@@ -91,7 +91,8 @@ var itemSchema = new Schema({
         type: String,
         default: Date.now
     },
-    type: String
+    type: String,
+    image: String
 }, {
     collection: "items"
 });
@@ -102,12 +103,14 @@ var Item = mongoose.model('item', itemSchema);
 app.get("/", function (req, res) {
     // req.session.username = 'admin';
     username = req.session.username;
-    res.render("index", {
-        title: "Index",
-        description: "This is the main page",
-        username: username,
-        tableItems: []
-    })
+    Item.find({}).then(function (results) {
+        res.render("index", {
+            title: "Index",
+            description: "This is the main page",
+            username: username,
+            tableItems: results
+        })
+    });
 });
 
 function reloadItemList(req, res, resMessage) {
@@ -309,8 +312,8 @@ app.post('/addItem', function (req, res) {
     var newItem = new Item({
         name: req.body.name,
         quantity: req.body.quantity,
-        date: '',
-        type: req.body.type
+        date: req.body.date,
+        image: "/images/user_icon.png"
     });
     queryItemByName(newItem.name).exec(function (err, result) {
         if (err)
@@ -546,40 +549,13 @@ app.post('/updateUsers', function (req, res) {
 
 app.post('/removeItem', function (req, res) {
     name = req.body.name;
-    username = req.body.username;
-    console.log(name);
-    Item.deleteOne({
-        name: name
-    }, function (error) {
-        if (error) {
-            // reloadItemList(req, res, 'Unable to delete item');
-            res.send(err);
-        } else {
-            // reloadItemList(req, res, 'Item deleted');
-            res.render("admin", {
-                title: "admin",
-                description: "Displaying all items.",
-                username: username,
-                itemFlag: true
-            });
-        }
-    });
-});
-
-app.post('/removeUser', function (req, res) {
-    name = req.body.name;
-    User.deleteOne({
+    Item.remove({
         name: name
     }, function (error) {
         if (error) {
             reloadItemList(req, res, 'Unable to delete item');
         } else {
-            res.render("admin", {
-                title: "admin",
-                description: "Displaying all items.",
-                username: username,
-                itemFlag: true
-            });
+            reloadItemList(req, res, 'Item deleted');
         }
     });
 });
@@ -589,18 +565,26 @@ app.post('/removeAllItems', function (req, res) {
         if (error) {
             reloadItemList(req, res, 'Unable to remove all items');
         } else {
-            // reloadItemList(req, res, 'All items removed.');
-            res.render("admin", {
-                title: "admin",
-                description: "Displaying all items.",
-                username: username,
-                itemFlag: true
-            });
+            reloadItemList(req, res, 'All items removed.');
         }
     });
 });
-app.post('/removeAllUsers', function (req, res) {
-    User.remove({}, function (error) {
+
+app.post('/removeUser', function (req, res) {
+    name = req.body.username;
+    user.remove({
+        name: name
+    }, function (error) {
+        if (error) {
+            reloadItemList(req, res, 'Unable to delete item');
+        } else {
+            reloadItemList(req, res, 'Item deleted');
+        }
+    });
+});
+
+app.post('/removeAllItems', function (req, res) {
+    Item.remove({}, function (error) {
         if (error) {
             reloadItemList(req, res, 'Unable to remove all items');
         } else {
@@ -668,11 +652,13 @@ app.post("/processLogin", function (req, res) {
         var username = req.body.username;
         req.session.username = username;
 
-        res.render("index", {
-            title: "Hello",
-            description: "",
-            username: username,
-            tableItems: []
+        Item.find({}).then(function (results) {
+            res.render("index", {
+                title: "Hello",
+                description: "",
+                username: username,
+                tableItems: results
+            });
         });
         console.log(username);
     } else {
@@ -694,11 +680,13 @@ app.post("/processLogin", function (req, res) {
                 var username = req.body.username;
                 req.session.username = username;
 
-                res.render("index", {
-                    title: "Hello",
-                    description: "",
-                    username: username,
-                    tableItems: []
+                Item.find({}).then(function (results) {
+                    res.render("index", {
+                        title: "Hello",
+                        description: "",
+                        username: username,
+                        tableItems: results
+                    });
                 });
             }
         });
@@ -713,11 +701,13 @@ app.post("/processLogin", function (req, res) {
 // Signout get
 app.get("/signout", function (req, res) {
     req.session.username = undefined;
-    res.render("index", {
-        title: "Index",
-        description: "You have signed out.",
-        username: undefined,
-        tableItems: []
+    Item.find({}).then(function (results) {
+        res.render("index", {
+            title: "Index",
+            description: "You have signed out.",
+            username: undefined,
+            tableItems: results
+        });
     });
 });
 
@@ -757,11 +747,13 @@ app.post("/processRegistration", function (req, res) {
                     var username = newUser.username;
                     req.session.username = username;
 
-                    res.render("index", {
-                        title: "Hello",
-                        description: "",
-                        username: username,
-                        tableItems: []
+                    Item.find({}).then(function (results) {
+                        res.render("index", {
+                            title: "Hello",
+                            description: "",
+                            username: username,
+                            tableItems: results
+                        });
                     });
                 }
             });

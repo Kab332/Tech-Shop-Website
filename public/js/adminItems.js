@@ -61,7 +61,7 @@ $(document).ready(function () {
           console.log("test");
 
           var form = $(
-            '<form method="post" action="/addUser" class="form-inline"> needsValidation'
+            '<form method="post" action="/addItem" class="form-inline"> needsValidation'
           );
           var div = $("<div>").attr("class", "form-group");
           var btn = $(
