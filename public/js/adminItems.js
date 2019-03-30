@@ -1,12 +1,13 @@
+//flag to keep track of which tab the admin is on
 var itemFlag;
+
 $(document).ready(function () {
   var table = $(".table");
   var tHeaders;
-  // var table = $("<table>");
   itemFlag = $(".itemFlag");
 
-  console.log(itemFlag.text());
-
+  //If the admin is on the items tab, render the item table and populate it with 
+  //the approriate values 
   if (itemFlag.text() === "true") {
     $.ajax({
       type: "GET",
@@ -14,15 +15,20 @@ $(document).ready(function () {
       dataType: "JSON",
       success: function (response) {
         console.log(response);
-        tHeaders = ["name", "quantity", "date", "type"];
+        tHeaders = ["name", "quantity", "date", "type", "image"];
 
-        //draws the first row
-        table.append(
-          '<tr class="tableHeader"><th>name</th><th>quantity</th><th>date</th><th>type</th>' +
-          '<th>remove?</th>'
-        );
+        //draws the th row
+        var tr = $('<tr class="tableHeader">');
+        for (var i = 0; i < tHeaders.length; i++) {
+          var th = $('<th>').text(tHeaders[i]);
+          tr.append(th);
+        }
+        //remove? header
+        var th = $('<th>').text('remove?');
+        tr.append(th);
+        table.append(tr);
 
-        //draws the rest of table
+        //draws the td rows
         for (var i = 0; i < response.length; i++) {
           var remove = $(
             '<form method="post" action="/removeItem" class="form">'
@@ -41,12 +47,15 @@ $(document).ready(function () {
             response[i].date +
             "</td><td>" +
             response[i].type +
+            "</td><td>" +
+            response[i].image +
             "</td>"
           );
           var td = $("<td>").append(remove);
           tr.append(td);
           table.append(tr);
         }
+        //draws the addition button, which spans across the table
         var tr = $("<tr>").attr("class", "addColumn");
         var td = $("<td>")
           .attr("colspan", tHeaders.length + 1)
@@ -56,9 +65,9 @@ $(document).ready(function () {
         tr.append(td);
         table.append(tr);
 
-        $(".add").click(function (e) {
-          console.log("test");
 
+        //When add button is clicked replace the button with a form 
+        $(".add").click(function (e) {
           var form = $(
             '<form method="post" action="/addItem" class="form-inline"> needsValidation'
           );
@@ -86,14 +95,15 @@ $(document).ready(function () {
         });
       }
     });
-  } else {
+  }
+  //If the admin is on the users tab, render the item table and populate it with 
+  //the approriate values 
+  else {
     $.ajax({
       type: "GET",
       url: "/users/ALL",
       dataType: "JSON",
       success: function (response) {
-        console.log(response);
-
         tHeaders = [
           "username",
           "email",
@@ -104,10 +114,15 @@ $(document).ready(function () {
           "city",
           "zip"
         ];
-        table.append(
-          '<tr class="tableHeader"><th>username</th><th>email</th><th>hashedPassword</th>+' +
-          "<th>address</th><th>country</th><th>province</th><th>city</th><th>zip</th><th>remove?</th>"
-        );
+        var tr = $('<tr class="tableHeader">');
+        for (var i = 0; i < tHeaders.length; i++) {
+          var th = $('<th>').text(tHeaders[i]);
+          tr.append(th);
+        }
+        //remove? header
+        var th = $('<th>').text('remove?');
+        tr.append(th);
+        table.append(tr);
 
         //draws the table
         for (var i = 0; i < response.length; i++) {
@@ -152,8 +167,6 @@ $(document).ready(function () {
         table.append(tr);
 
         $(".add").click(function (e) {
-          console.log("test");
-
           var form = $(
             '<form method="post" action="/addUser" class="form-inline"> needsValidation'
           );
@@ -183,11 +196,11 @@ $(document).ready(function () {
     });
   }
 
+  //lab 7 code that was modified to work with the current table
   $("td").click(function (e) {
+    //any cells besides the remove button
     if (e.currentTarget.cellIndex < tHeaders.length) {
-      console.log(e);
       submitAll();
-
       var currCell = $(this);
 
       let cellVal = currCell.html();
@@ -199,7 +212,10 @@ $(document).ready(function () {
           currCell.html($(".change").val());
         }
       });
-    } else {
+    }
+    //remove button is clicked 
+    else {
+      //gets name of object that need to be removed
       var name = $(this)
         .children()
         .children()
@@ -210,7 +226,7 @@ $(document).ready(function () {
       } else {
         url = "/removeUser";
       }
-      console.log(name);
+      //rends post request to backedn to remove item from db
       $.ajax({
         type: "POST",
         url: url,
@@ -224,9 +240,9 @@ $(document).ready(function () {
     }
   });
 
+  //utility function for the cells click function
   function submitAll() {
     $(".change").each(function () {
-      console.log($(this));
       let inputVal = $(this).val();
       let cell = $(this).parent();
       cell.html(inputVal);
@@ -261,8 +277,6 @@ function submitUpdateForm() {
     });
 
     tableData += " ]}";
-
-    console.log(tableData);
 
     /* Sending an ajax request to update the items in the database using the values *
      * of the items in the client side table.                                       */
@@ -305,7 +319,6 @@ function submitUpdateForm() {
 
     tableData += " ]}";
 
-    console.log(tableData);
     /* Sending an ajax request to update the items in the database using the values *
      * of the items in the client side table.                                       */
     $.ajax({

@@ -313,7 +313,7 @@ app.post('/addItem', function (req, res) {
         name: req.body.name,
         quantity: req.body.quantity,
         date: req.body.date,
-        image: "/images/user_icon.png"
+        image: req.body.image
     });
     queryItemByName(newItem.name).exec(function (err, result) {
         if (err)
