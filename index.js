@@ -411,29 +411,38 @@ app.post('/makeTransaction', function (req, res) {
     var cart = req.session.cart;
 
     Item.find({}).then(function (results) {
-        var items = results;
+        var items = {};
         var transactions;
 
-        User.find({
-            username: req.session.username
-        }).then(function (result) {
+        for (var k = 0; k < cart.length; k++) {
+            var name = cart[k].name;
+            var quantity = cart[k].quantity;
+
+            if(items[name] != undefined) {
+                items[name] = {quantity: parseInt(quantity, 10), count: items[name].count + 1}
+            } else {
+                items[name] = {quantity: parseInt(quantity, 10), count: 1};
+            }
+        }
+
+        User.find({ username: req.session.username}).then(function (result) {
             var currentUser = result[0];
-            // console.log(currentUser);
-            // console.log(currentUser.transactions);
             transactions = JSON.parse(currentUser.transactions);
 
-            for (var i = 0; i < cart.length; i++) {
+            for (item in items) {
                 var status = "Purchased";
 
-                if (cart[i].quantity == 0) {
-                    status = "Ordered";
-                }
+                for (var i = 0; i < items[item].count; i++) {
+                    if ((items[item].quantity - (i + 1)) < 0) {
+                        status = "Ordered";                        
+                    }
 
-                var data = {
-                    name: cart[i].name,
-                    status: status
-                };
-                transactions.push(data);
+                    var data = {
+                        name: item,
+                        status: status
+                    };
+                    transactions.push(data);                    
+                }
             }
 
             currentUser.transactions = JSON.stringify(transactions);
@@ -461,6 +470,28 @@ app.post('/makeTransaction', function (req, res) {
                     }
                 });
         });
+
+        for (item in items) {
+            var quantityValue;
+
+            if (items[item].quantity <= items[item].count) {
+                quantityValue = 0;
+            } else {
+                quantityValue = items[item].quantity - items[item].count;
+            }
+
+            Item.updateOne({
+                    name: item
+                },
+                {$set: {quantity: quantityValue}},
+                function (error, num) {
+                    if (error != null) {
+                        console.log("Update item Failed");
+                    } else {
+                        console.log("Update item Successful");
+                    }
+                });            
+        }
     });
 });
 
