@@ -113,23 +113,17 @@ app.get("/", function (req, res) {
     });
 });
 
-function reloadItemList(req, res, resMessage) {
-    Item.find()
-        .then(function (results) {
-            res.render("items", {
-                title: "Items List",
-                items: results,
-                resMessage: resMessage
-            });
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+function reloadAdmin(req, res, resMessage) {
+    res.render("admin", {
+        title: "admin",
+        resMessage: resMessage,
+        itemFlag: true
+    });
 }
 
 app.get("/items", function (req, res) {
     username = req.session.username;
-    reloadItemList(req, res, "");
+    reloadAdmin(req, res, "");
 });
 // app.get('/items/all', function (req, res) {
 //     Item.find({}).then(function (err, item) {
@@ -324,10 +318,10 @@ app.post('/addItem', function (req, res) {
                 if (error) {
                     // insert failed
                     console.log('error while adding item:', error);
-                    reloadItemList(req, res, 'Unable to add item');
+                    reloadAdmin(req, res, 'Unable to add item');
                 } else {
                     // insert successful
-                    // reloadItemList(req, res, 'Item added');
+                    // reloadAdmin(req, res, 'Item added');
                     res.render("admin", {
                         title: "admin",
                         resMessage: newItem.name + " added",
@@ -364,10 +358,10 @@ app.post('/addUser', function (req, res) {
                 if (error) {
                     // insert failed
                     console.log('error while adding item:', error);
-                    reloadItemList(req, res, 'Unable to add item');
+                    reloadAdmin(req, res, 'Unable to add item');
                 } else {
                     // insert successful
-                    // reloadItemList(req, res, 'Item added');
+                    // reloadAdmin(req, res, 'Item added');
                     res.render("admin", {
                         title: "admin",
                         resMessage: newUser.name + " added",
@@ -545,9 +539,9 @@ app.post('/removeItem', function (req, res) {
         name: name
     }, function (error) {
         if (error) {
-            reloadItemList(req, res, 'Unable to delete item');
+            reloadAdmin(req, res, 'Unable to delete item');
         } else {
-            reloadItemList(req, res, 'Item deleted');
+            reloadAdmin(req, res, 'Item deleted');
         }
     });
 });
@@ -555,9 +549,9 @@ app.post('/removeItem', function (req, res) {
 app.post('/removeAllItems', function (req, res) {
     Item.remove({}, function (error) {
         if (error) {
-            reloadItemList(req, res, 'Unable to remove all items');
+            reloadAdmin(req, res, 'Unable to remove all items');
         } else {
-            reloadItemList(req, res, 'All items removed.');
+            reloadAdmin(req, res, 'All items removed.');
         }
     });
 });
@@ -568,9 +562,9 @@ app.post('/removeUser', function (req, res) {
         name: name
     }, function (error) {
         if (error) {
-            reloadItemList(req, res, 'Unable to delete item');
+            reloadAdmin(req, res, 'Unable to delete item');
         } else {
-            reloadItemList(req, res, 'Item deleted');
+            reloadAdmin(req, res, 'Item deleted');
         }
     });
 });
@@ -578,9 +572,9 @@ app.post('/removeUser', function (req, res) {
 app.post('/removeAllItems', function (req, res) {
     Item.remove({}, function (error) {
         if (error) {
-            reloadItemList(req, res, 'Unable to remove all items');
+            reloadAdmin(req, res, 'Unable to remove all items');
         } else {
-            reloadItemList(req, res, 'All items removed.');
+            reloadAdmin(req, res, 'All items removed.');
         }
     });
 });

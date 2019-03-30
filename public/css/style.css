@@ -131,6 +131,7 @@ th, td {
 }
 
 .box {
+  background-color: lightgrey;
   border: 1px solid black;
   border-radius: 5px;
 }
@@ -156,6 +157,7 @@ hr {
 }
 
 .signup {
+  background-color: lightgrey;
   margin: 10px;
   padding: 10px;
   border: 1px solid black;
@@ -167,6 +169,10 @@ hr {
 }
 
 .addForm {
+  display: none;
+}
+
+.itemFlag {
   display: none;
 }
 

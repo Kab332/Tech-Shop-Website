@@ -1,7 +1,5 @@
 extends layout
 block content
-   h1= title
-
    div(class='errorMessage')= errorMessage
 
    form#login.needs-validation(method='post', action='/processLogin', novalidate='')
@@ -9,7 +7,7 @@ block content
       .box
         .loginBox
           .form-group
-            label(for='uName') LOGO
+            label(for='uName') Newer Egg
             input#userName.form-control(type='userName', name='username', placeholder='Username', required='')
             if (loginError)
               .invalid-feedback
