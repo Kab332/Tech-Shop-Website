@@ -389,22 +389,13 @@ app.post('/addToCart', function (req, res) {
         quantity: req.body.quantity,
     };
 
-    // console.log("\nCurrent: " + JSON.stringify(req.session.cart));
-
     if (req.session.cart == undefined) {
         req.session.cart = [data];
     } else {
         req.session.cart.push(data);
     }
 
-    // console.log("\nAfter: " + JSON.stringify(req.session.cart));
-
-    res.render("index", {
-        title: "Index",
-        description: req.body.name + " has been added to cart",
-        username: req.session.username,
-        tableItems: JSON.parse(req.body.tableItems)
-    })
+    res.json("Received");
 });
 
 app.post('/makeTransaction', function (req, res) {

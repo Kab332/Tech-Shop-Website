@@ -9,33 +9,31 @@ block content
 
    //- a Some Store   
 
-   div(id="searchDiv" class="container-fluid")
-      form(method="post",
-         action="/search"
-         class="form")
-         input(class="searchBar" name="searchValue", type='text', placeholder='Enter Search...')
-         button(class="searchButton", name="Search") Search
+   head  
+      script(type='text/javascript', src='/js/indexPage.js')
 
-   div(id="tableDiv" class="container-fluid")
-      if(tableItems.length > 0)
-         each item in tableItems
-            div(id="itemDiv")
-               table(id="itemTable" class="table")
-                  tr(class="tableHeader")
-                     th= item.name
-                  tr(class="tableImageRow")
-                     td
-                        img(class="tableImage" src=item.image)
-                  tr(class="tableRow")
-                     td= 'Quantity: ' + item.quantity
-                  if(username != undefined)
-                     td
-                        form(method='post',
-                           action='/addToCart',
-                           class='form')
-                           input(type="hidden", name="name", value=item.name)
-                           input(type="hidden", name="quantity", value=item.quantity)
-                           input(type="hidden", name="tableItems", value=JSON.stringify(tableItems))
+   body
+      div(id="searchDiv" class="container-fluid")
+         form(method="post",
+            action="/search"
+            class="form")
+            input(class="searchBar" name="searchValue", type='text', placeholder='Enter Search...')
+            button(class="searchButton", name="Search") Search
+
+      div(id="tableDiv" class="container-fluid")
+         if(tableItems.length > 0)
+            each item in tableItems
+               div(id="itemDiv")
+                  table(id="itemTable" class="table")
+                     tr(class="tableHeader")
+                        th= item.name
+                     tr(class="tableImageRow")
+                        td
+                           img(class="tableImage" src=item.image)
+                     tr(class="tableRow")
+                        td= 'Quantity: ' + item.quantity
+                     if(username != undefined)
+                        td
                            if(item.quantity == 0)
                               button(class="cartButton", name="cartButton") Add to Cart (Order)
                            else                           
