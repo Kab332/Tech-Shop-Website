@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $("table").click(function(event) {
+    $(".cartButton").click(function(event) {
         var tbody = event.target.parentNode.parentNode.parentNode;
         var rows = $(tbody).children();
         var name = $(rows[0]).text();
