@@ -1,3 +1,4 @@
+//Importing all the required packages
 var express = require("express");
 var app = express();
 
@@ -27,12 +28,6 @@ app.use(
         extended: false
     })
 );
-app.use(
-    "/bootstrap",
-    express.static(__dirname + "/node_modules/bootstrap/dist/")
-);
-app.use("/jquery", express.static(__dirname + "/node_modules/jquery/dist/"));
-
 app.use(bodyParser.json());
 
 //configure the template engine
@@ -51,10 +46,7 @@ app.use(
     })
 );
 
-var usernames = [];
-var items = [];
-
-// database schemas
+// User database schemas
 var Schema = mongoose.Schema;
 var userSchema = new Schema({
     username: {
@@ -77,9 +69,10 @@ var userSchema = new Schema({
 }, {
     collection: "users"
 });
+//user model
 var User = mongoose.model("user", userSchema);
 
-var Schema = mongoose.Schema;
+// Item database schemas
 var itemSchema = new Schema({
     name: {
         type: String,
@@ -96,12 +89,11 @@ var itemSchema = new Schema({
 }, {
     collection: "items"
 });
-
+//Item model
 var Item = mongoose.model('item', itemSchema);
 
-//calls landing page
+//Renders the Landing page
 app.get("/", function (req, res) {
-    // req.session.username = 'admin';
     username = req.session.username;
     Item.find({}).then(function (results) {
         res.render("index", {
@@ -113,32 +105,16 @@ app.get("/", function (req, res) {
     });
 });
 
-function reloadItemList(req, res, resMessage) {
-    Item.find()
-        .then(function (results) {
-            res.render("items", {
-                title: "Items List",
-                items: results,
-                resMessage: resMessage
-            });
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+//utility function to reaload admin page
+function reloadAdmin(req, res, resMessage) {
+    res.render("admin", {
+        title: "admin",
+        resMessage: resMessage,
+        itemFlag: true
+    });
 }
 
-app.get("/items", function (req, res) {
-    username = req.session.username;
-    reloadItemList(req, res, "");
-});
-// app.get('/items/all', function (req, res) {
-//     Item.find({}).then(function (err, item) {
-//         if (err)
-//             res.send(err);
-//         res.json(item);
-//     });
-// });
-
+//retuns apropriate item data as json
 app.get("/items/:id", function (req, res) {
     console.log(req.params.id);
     var id = req.params.id;
@@ -160,16 +136,9 @@ app.get("/items/:id", function (req, res) {
         });
     }
 });
-// app.get("/users/:id", function (req, res) {
-//     User.find({
-//         name: req.params.id
-//     }).then(function (err, item) {
-//         if (err)
-//             res.send(err);
-//         res.json(item);
-//     });
-// });
 
+
+//retuns apropriate user data as json
 app.get("/users/:id", function (req, res) {
     console.log(req.params.id);
     var id = req.params.id;
@@ -192,21 +161,7 @@ app.get("/users/:id", function (req, res) {
     }
 });
 
-// app.get('/users/all', function (req, res) {
-//     User.find({}).then(function (err, item) {
-//         if (err)
-//             res.send(err);
-//         res.json(item);
-//     });
-// });
-
-app.get('/user', function (req, res) {
-    res.render("users", {
-        title: "users",
-        message: "test user page"
-    });
-});
-
+/****** Utility query functions ******/
 function queryItemByName(name) {
     return Item.find({
         name: name
@@ -225,6 +180,7 @@ function queryUserByEmail(name) {
     });
 }
 
+//used to rend admin page based on id passed
 app.get('/admin/:id', function (req, res) {
     username = req.session.username;
     var id = req.params.id;
@@ -246,7 +202,10 @@ app.get('/admin/:id', function (req, res) {
                 itemFlag: false
             });
         }
-    } else {
+    }
+    //if someone trys to call the page without proper credentials, 
+    //send them back to the landing page 
+    else {
         Item.find({}).then(function (results) {
             res.render("index", {
                 title: "Index",
@@ -257,21 +216,8 @@ app.get('/admin/:id', function (req, res) {
         });
     }
 });
-// app.get('/admin/users', function (req, res) {
-//     username = req.session.username;
-//     if (username === 'admin') {
 
-//     } else {
-//         res.render("index", {
-//             title: "Index",
-//             description: "Displaying all users.",
-//             username: username,
-//             tableItems: []
-//         });
-//     }
-// });
-
-
+//Uses to query the database for the searched term and render the appropriate result
 app.post('/search', function (req, res) {
     username = req.session.username;
     if (req.body.searchValue == "all") {
@@ -308,6 +254,7 @@ app.post('/search', function (req, res) {
     }
 });
 
+//Used to add a new Item into the database
 app.post('/addItem', function (req, res) {
     var newItem = new Item({
         name: req.body.name,
@@ -318,15 +265,13 @@ app.post('/addItem', function (req, res) {
     queryItemByName(newItem.name).exec(function (err, result) {
         if (err)
             console.error(err);
+        //checks to see if an item with that name exists, if not the execute
         if (result.length == 0) {
             newItem.save(function (error) {
                 if (error) {
-                    // insert failed
                     console.log('error while adding item:', error);
-                    reloadItemList(req, res, 'Unable to add item');
+                    reloadAdmin(req, res, 'Unable to add item');
                 } else {
-                    // insert successful
-                    // reloadItemList(req, res, 'Item added');
                     res.render("admin", {
                         title: "admin",
                         resMessage: newItem.name + " added",
@@ -343,6 +288,7 @@ app.post('/addItem', function (req, res) {
     });
 });
 
+//used to add a new user to the database
 app.post('/addUser', function (req, res) {
     var newUser = new User({
         username: req.body.username,
@@ -354,19 +300,19 @@ app.post('/addUser', function (req, res) {
         city: req.body.city,
         zip: req.body.zip
     });
-    console.log(newUser.username);
     queryUserByUserName(newUser.name).exec(function (err, result) {
         if (err)
             console.error(err);
+        //check to see if the username is free
         if (result.length == 0) {
             newUser.save(function (error) {
                 if (error) {
                     // insert failed
                     console.log('error while adding item:', error);
-                    reloadItemList(req, res, 'Unable to add item');
+                    reloadAdmin(req, res, 'Unable to add item');
                 } else {
                     // insert successful
-                    // reloadItemList(req, res, 'Item added');
+                    // reloadAdmin(req, res, 'Item added');
                     res.render("admin", {
                         title: "admin",
                         resMessage: newUser.name + " added",
@@ -383,30 +329,26 @@ app.post('/addUser', function (req, res) {
     });
 });
 
+//addes the item to cart, which is dependant on the session
 app.post('/addToCart', function (req, res) {
     var data = {
         name: req.body.name,
         quantity: req.body.quantity,
     };
 
-    // console.log("\nCurrent: " + JSON.stringify(req.session.cart));
-
+    //if no data in the cart create data array
     if (req.session.cart == undefined) {
         req.session.cart = [data];
-    } else {
+    }
+    //else append data to existing data array 
+    else {
         req.session.cart.push(data);
     }
 
-    // console.log("\nAfter: " + JSON.stringify(req.session.cart));
-
-    res.render("index", {
-        title: "Index",
-        description: req.body.name + " has been added to cart",
-        username: req.session.username,
-        tableItems: JSON.parse(req.body.tableItems)
-    })
+    res.json("Received");
 });
 
+//Confirms all purchases of the cart and add user transaction
 app.post('/makeTransaction', function (req, res) {
     var cart = req.session.cart;
 
@@ -418,8 +360,6 @@ app.post('/makeTransaction', function (req, res) {
             username: req.session.username
         }).then(function (result) {
             var currentUser = result[0];
-            // console.log(currentUser);
-            // console.log(currentUser.transactions);
             transactions = JSON.parse(currentUser.transactions);
 
             for (var i = 0; i < cart.length; i++) {
@@ -464,6 +404,7 @@ app.post('/makeTransaction', function (req, res) {
     });
 });
 
+//Updates all the items in the database with the ginve values
 app.post('/updateItems', function (req, res) {
     username = req.session.username;
     var resultMessage = "";
@@ -549,13 +490,14 @@ app.post('/updateUsers', function (req, res) {
 
 app.post('/removeItem', function (req, res) {
     name = req.body.name;
+    console.log(name);
     Item.remove({
         name: name
     }, function (error) {
         if (error) {
-            reloadItemList(req, res, 'Unable to delete item');
+            reloadAdmin(req, res, 'Unable to delete item');
         } else {
-            reloadItemList(req, res, 'Item deleted');
+            reloadAdmin(req, res, 'Item deleted');
         }
     });
 });
@@ -563,9 +505,9 @@ app.post('/removeItem', function (req, res) {
 app.post('/removeAllItems', function (req, res) {
     Item.remove({}, function (error) {
         if (error) {
-            reloadItemList(req, res, 'Unable to remove all items');
+            reloadAdmin(req, res, 'Unable to remove all items');
         } else {
-            reloadItemList(req, res, 'All items removed.');
+            reloadAdmin(req, res, 'All items removed.');
         }
     });
 });
@@ -576,9 +518,9 @@ app.post('/removeUser', function (req, res) {
         name: name
     }, function (error) {
         if (error) {
-            reloadItemList(req, res, 'Unable to delete item');
+            reloadAdmin(req, res, 'Unable to delete item');
         } else {
-            reloadItemList(req, res, 'Item deleted');
+            reloadAdmin(req, res, 'Item deleted');
         }
     });
 });
@@ -586,9 +528,9 @@ app.post('/removeUser', function (req, res) {
 app.post('/removeAllItems', function (req, res) {
     Item.remove({}, function (error) {
         if (error) {
-            reloadItemList(req, res, 'Unable to remove all items');
+            reloadAdmin(req, res, 'Unable to remove all items');
         } else {
-            reloadItemList(req, res, 'All items removed.');
+            reloadAdmin(req, res, 'All items removed.');
         }
     });
 });
