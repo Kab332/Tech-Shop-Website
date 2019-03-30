@@ -18,9 +18,8 @@ $(document).ready(function () {
 
         //draws the first row
         table.append(
-          "<tr><th>name</th><th>quantity</th><th>date</th><th>type</th>" +
-          '<th>remove?</th><th><form method="post" action="removeAllItems" class="form">' +
-          '<button class="control row 3">Remove All</button></th>'
+          '<tr class="tableHeader"><th>name</th><th>quantity</th><th>date</th><th>type</th>' +
+          '<th>remove?</th>'
         );
 
         //draws the rest of table
@@ -106,9 +105,8 @@ $(document).ready(function () {
           "zip"
         ];
         table.append(
-          "<tr><th>username</th><th>email</th><th>hashedPassword</th>+" +
-          "<th>address</th><th>country</th><th>province</th><th>city</th><th>zip</th><th>remove?</th>" +
-          '<th><form method="post" action="/removeAllUsers" class="form"><button class="control row 3">Remove All</button></th>'
+          '<tr class="tableHeader"><th>username</th><th>email</th><th>hashedPassword</th>+' +
+          "<th>address</th><th>country</th><th>province</th><th>city</th><th>zip</th><th>remove?</th>"
         );
 
         //draws the table
@@ -184,30 +182,6 @@ $(document).ready(function () {
       }
     });
   }
-
-  // $(table).click(function (e) {
-  //   e.preventDefault();
-  $("th").click(function (e) {
-    console.log(e);
-    if (e.currentTarget.cellIndex == tHeaders.length - 1) {
-      var url;
-      if (itemFlag.text() == "true") {
-        url = "/removeItem";
-      } else {
-        url = "/removeUser";
-      }
-      console.log(url);
-      $.ajax({
-        type: "POST",
-        url: url,
-        data: [],
-        success: function (response) {
-          localStorage.setItem("Message", response); // Storing the reponse from the Ajax call to be used after reloading the page
-          document.location.reload();
-        }
-      });
-    }
-  });
 
   $("td").click(function (e) {
     if (e.currentTarget.cellIndex < tHeaders.length) {

@@ -5,8 +5,13 @@ block content
 
    body
       div(class="container-fluid")
-         h1= title
-         button(class="control row3" name="Update" onClick="submitUpdateForm()") Update
+         div(class="headerDiv")
+            h1= title
+            button(class="control row3" name="Update" onClick="submitUpdateForm()") Update
+            form(method="post",
+               action="/removeAllItems"
+               class="form")
+               button(class="control row 3") Remove All
          if (resMessage)
             div(class="error")
                each line in resMessage.split("\n")
