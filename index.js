@@ -522,10 +522,10 @@ app.post('/updateUsers', function (req, res) {
 });
 
 app.post('/removeItem', function (req, res) {
-    name = req.body.name;
-    console.log(name);
-    Item.remove({
-        name: name
+    val = req.body.name;
+    console.log(val);
+    Item.deleteOne({
+        name: val
     }, function (error) {
         if (error) {
             reloadAdmin(req, res, 'Unable to delete item');
@@ -546,14 +546,14 @@ app.post('/removeAllItems', function (req, res) {
 });
 
 app.post('/removeUser', function (req, res) {
-    name = req.body.username;
-    user.remove({
-        name: name
+    val = req.body.username;
+    User.deleteOne({
+        name: val
     }, function (error) {
         if (error) {
-            reloadAdmin(req, res, 'Unable to delete item');
+            reloadAdmin(req, res, 'Unable to delete user');
         } else {
-            reloadAdmin(req, res, 'Item deleted');
+            reloadAdmin(req, res, 'User deleted');
         }
     });
 });
@@ -611,11 +611,17 @@ app.get("/transactionHistory", function (req, res) {
     User.find({
         username: req.session.username
     }).then(function (result) {
-        var transactions = JSON.parse(result[0].transactions);
-        res.render("transactionHistory", {
-            description: "There are " + transactions.length + " item(s) in transaction history",
-            tableItems: transactions
-        });
+        if(username != "admin") {
+            var transactions = JSON.parse(result[0].transactions);
+            res.render("transactionHistory", {
+                description: "There are " + transactions.length + " item(s) in transaction history",
+                tableItems: transactions
+            });
+        } else {
+            res.render("transactionHistory", {
+                description: "Admin accounts do not have transactions",
+            });
+        }
     });
 });
 
@@ -714,7 +720,14 @@ app.post("/processRegistration", function (req, res) {
                 errorMessage: 'user with that name already exists',
                 registerError: true
             });
+        } else if (newUser.username == "admin") {
+            res.render("register", {
+                title: 'register',
+                errorMessage: 'Invalid Username',
+                registerError: true
+            });
         } else {
+            console.log9("Reached");
             newUser.save(function (err) {
                 if (err) {
                     console.log(err)

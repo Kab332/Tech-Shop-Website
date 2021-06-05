@@ -25,4 +25,5 @@ block content
         form(method='post',
             action='/makeTransaction',
             class='form')
-            button(class='transactionButton', name='transactionButton') Purchase All
+            if (username != 'admin')
+                button(class='transactionButton', name='transactionButton') Purchase All

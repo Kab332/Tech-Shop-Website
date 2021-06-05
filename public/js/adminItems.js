@@ -96,7 +96,7 @@ $(document).ready(function () {
       }
     });
   }
-  //If the admin is on the users tab, render the item table and populate it with 
+  //If the admin is on the users tab, render the user table and populate it with 
   //the approriate values 
   else {
     $.ajax({
@@ -127,7 +127,7 @@ $(document).ready(function () {
         //draws the table
         for (var i = 0; i < response.length; i++) {
           var remove = $(
-            '<form method="post" action="/removeItem" class="form">'
+            '<form method="post" action="/removeUser" class="form">'
           );
           remove.append(
             '<input type="hidden" name="name" value="' +
